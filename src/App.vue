@@ -1,26 +1,53 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+	<HeaderView/>
+	<router-view v-slot="{ Component }">
+		<component :is="Component" />
+	</router-view>
+	<FooterView />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+//import HomeView from '@/views/HomeView.vue'
+//import HeaderView from './components/Layout/Header.vue';
+import FooterView from '@/components/Layout/Footer.vue'
+import HeaderView from '@/components/Layout/HeaderView.vue';
+import userService from '@/Services/userService';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    //HomeView,
+    //HeaderView,
+    FooterView,
+    HeaderView
+	},
+	
+		async created()
+  {
+		this.$store.commit( "setConnected", await userService.isConnected() );
+  },
 }
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Quicksand:wght@300;400;700&display=swap');
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	margin: 0 0 2.2em 0;
+	padding: 0;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #003e7c;
+	width: 100%;
+	max-width: 450px;
+	min-height: calc(100vh - 2.2em);
+	height: 100%;
+	background-color: white;
+	
+}
+body{
+	margin: 0;
+	background-color: rgb(138, 138, 138);
+	display: flex;
+	justify-content: center;
 }
 </style>

@@ -4,7 +4,9 @@ import storage from "@/utils/storage";
 const userService = 
 {
   // Propriété qui stocke la BASE URL de notre API
-  base_url : "http://192.168.1.30/Projets_Vue/ListeDeCouseBackend/wordpress/wp-json",
+  base_url : "https://listeback.raffiskender.com/wp-json",
+
+	success : '',
 
   // Méthode pour se connecter
   async login( p_login, p_password )
@@ -12,7 +14,7 @@ const userService =
     const response = await axios.post( this.base_url + "/jwt-auth/v1/token", {
       username: p_login,
       password: p_password
-    } ).catch( function() {
+    }).catch( function() {
       return { data : null };
     } );
     return response.data;
@@ -55,6 +57,7 @@ const userService =
   },
 
 	async suscribe(eMail, login, firstName, lastName, password) {
+		this.success = 1;
 		const response = await axios.post( 
 			this.base_url + "/wp/v2/users",
 			{
@@ -64,11 +67,25 @@ const userService =
 				email      :eMail,
 				password   :password,
 				roles      :['author'],
-			}).catch( function() {
-      // Ici, j'indique a JS quoi faire si la requete échoue (erreur réseau, etc)
-				return { response : null };
-			});
-		return (response.data)
+			}).catch( function(response) {
+				// Ici, j'indique a JS quoi faire si la requete échoue (erreur réseau, etc)
+					//console.log(response.response.data.message);
+					userService.success = 0;
+					return response
+				}
+			);
+		if (this.success == 1){
+			return {
+				'success': 1,
+				'response': response.data,
+			}
+		}
+		else {
+			return {
+			'success': 0,
+			'response': response.response.data,
+			}
+		}
 	}
 };
 

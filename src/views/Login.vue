@@ -3,7 +3,7 @@
     <h2>Connexion</h2>
     <form @submit.prevent="this.handleFormSubmit">
       <label>
-        Login
+        Login ou e-mail
         <input type="text" name="login" v-model="this.login" placeholder="Paul Position"/>
         <div class="error" v-if="this.errors.loginEmpty">
           Vous devez saisir un identifiant !
@@ -12,8 +12,26 @@
 
       <label>
         Mot de passe
-        <input type="password" name="password" v-model="this.password" />
-        <div class="error" v-if="this.errors.passwordEmpty">
+        <input
+					:type="[pwdInputType()]"
+					name="password"
+					v-model="this.password"
+					@blur="[this.handleHidePwd()]"/>
+					
+				<img
+					@click="this.handleHidePwd()"
+					:class="[this.handleHideOpenEye()]"
+					src="@/assets/eye-slash-solid.svg"
+					alt=""
+					width="16">
+				<img
+					@click="this.handleShowPwd()"
+					:class="[this.handleHideClosedEye()]"
+					src="@/assets/eye-solid.svg"
+					alt=""
+					width="16">	
+				
+				<div class="error" v-if="this.errors.passwordEmpty">
           Vous devez saisir un mot de passe !
         </div>
       </label>
@@ -22,7 +40,7 @@
         Identifiants incorrects
       </div>
 
-      <button>
+      <button :disabled="this.login == '' || this.password == ''">
         Se connecter
       </button>
     </form>
@@ -42,6 +60,8 @@
       return {
         login: "",
         password: "",
+				seePwd:false,
+				
         errors : {
           loginEmpty: false,
           passwordEmpty: false,
@@ -52,15 +72,31 @@
 
     methods: 
     {
-      async handleFormSubmit( event )
+			handleShowPwd(){
+				this.seePwd = true;
+			},
+			
+			handleHidePwd(){
+				this.seePwd = false
+			},
+			
+			pwdInputType(){
+				return (this.seePwd) ? 'text' : 'password';
+			},
+			
+			handleHideOpenEye(){
+				return (this.seePwd) ? '' : 'hide';
+			},
+			
+			handleHideClosedEye(){
+				return (this.seePwd) ? 'hide' : '';
+			},
+			
+      async handleFormSubmit()
       {
-        console.log( "Form envoyé !", event );
 
         // On retire l'erreur précédente
         this.errors.loginFailed = false;
-
-         console.log( this.login );
-         console.log( this.password );
 
         // --- Vérification des données du formulaire --- //
 
@@ -89,15 +125,15 @@
             // VueX : Plus besoin de s'embeter a faire remonter des events
             this.$store.commit( 'userConnected' );
 						
-						console.log("connecté");
+						//console.log("connecté");
             // Redirection vers la home
-            this.$router.push( { name : 'home' } );
+            this.$router.push( { name : 'list' } );
           }
           else
           {
             // Token invalide, ou identifiants invalides
             this.errors.loginFailed = true;
-						console.log("ERREUR ! ! !")
+						//console.log("ERREUR ! ! !")
           }
         }
       }
@@ -121,22 +157,44 @@ form {
   padding: 1em;
   margin: 0;
 
-  label {
+label {
     margin-bottom: 1em;
+		color: #003e7c;
 		text-align: left;
-		font-family: Arial, Helvetica, sans-serif;
-
+		font-weight: normal;
+		font-family: 'Quicksand',  Arial, Helvetica, sans-serif;
     input {
       display: block;
       margin: 5px 0;
       width: 100%;
       padding: 0.75em 1.5em;
-      border-radius: 0.5em;
-			background: #dfdfdf;;
+      // border-radius: 0.5em;
+			background: #ffffff;;
       border: none;
+			border-bottom: #00aeff 2px solid;
+			border-left:  #00aeff 2px solid;;
       box-sizing: border-box;
+			&:hover{
+			background: #e0e0e0;;
+			}
+			&:focus{
+			background: #e0e0e0;;
+			}
     }
   }
+  img{
+		color:#003e7c;
+		font-size: 1.1em;
+		position:relative;
+		left: calc(100% - 2em);
+		top:-2em;
+		&:hover{
+			cursor:pointer;
+		}
+		&.hide{
+			display: none;
+		}
+	}
 
   button {
     display: block;
@@ -145,15 +203,20 @@ form {
     padding: 1em 1.5em;
     border-radius: 0.5em;
     color: white;
-		background: #ccc;
+		background: blueviolet;
     font-weight: bold;
     border: none;
     box-sizing: border-box;
+		transition: 0.3s;
 
     &:hover
     {
       cursor: pointer;
+			background: lighten(blueviolet, 15%);
     }
+		&:disabled{
+			background: #bbb;
+		}
   }
 }
 </style>

@@ -17,7 +17,9 @@
 		<div v-if="this.$store.state.isConnected">
 			<ul>
 				<li @click="this.$store.dispatch('userDisconnected')">
-          <span>Déconnexion</span>
+          <router-link :to="{name : 'home'}">
+						<span>Déconnexion</span>
+					</router-link>  
         </li>
 				<li>
           <router-link :to="{name : 'list'}" >
@@ -48,7 +50,7 @@ section{
 	max-width: 450px;
 	padding:0;
 	position: fixed;
-	top: calc(100% - 2.2em);
+	bottom: 0em;
 	// background-color: white;
 }
 ul{
@@ -77,12 +79,12 @@ li{
 	// box-shadow: 4px 4px 5px #555;
 	transition: 0.3s;
 	cursor:pointer;
-		>span{
-			color: rgb(180, 0, 0);
-		}
 		&:hover{
 			background: darken(rgb(216, 226, 253), 7.5%);
 		}
 }
+span{
+			color: rgb(180, 0, 0);
+		}
 
 </style>

@@ -29,9 +29,12 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Quicksand:wght@300;400;700&display=swap');
 
+h1, h2, h3, p, ul, li{
+	font-family: 'quicksand', Arial, Helvetica, sans-serif;
+}
 #app {
 	margin: 0 0 2.2em 0;
 	padding: 0;

@@ -7,17 +7,14 @@ const storage =
   set : function( key, value )
   {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-    const json = JSON.stringify( value );
-
     // https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
-    window.localStorage.setItem( key, json );
+    window.localStorage.setItem( key, JSON.stringify( value ) );
   },
 
   // Récupérer une valeur 
   get : function( key )
   {
-    const json = window.localStorage.getItem( key );
-    return JSON.parse( json );
+    return JSON.parse( window.localStorage.getItem( key ) );
   },
 
   // Supprimer une valeur

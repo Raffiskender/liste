@@ -4,7 +4,7 @@ import storage from "@/utils/storage";
 const listService =
 {
   // Propriété qui stocke la BASE URL de notre API
-	base_url : "http://192.168.1.30/Projets_Vue/ListeDeCouseBackend/wordpress/wp-json/",
+	base_url : "https://listeback.raffiskender.com/wp-json/",
 
   // Méthode pour se connecter
   async findAll()
@@ -12,7 +12,7 @@ const listService =
 		const userData = storage.get( "userData" );
 
     const response = await axios.get(
-			this.base_url + "wp/v2/list_element?author=1&status=private&_embed=true",
+			this.base_url + "wp/v2/list_element?author=" + userData.user_id + "&status=private&_embed=true",
 			{
 				headers:{
 						Authorization : "Bearer " + userData.token
@@ -21,7 +21,49 @@ const listService =
     ).catch( function() {
       return { data : null };
     } );
-		
+    return response.data;
+  },
+
+  async create(newElement)
+	{
+		const userData = storage.get( "userData" );
+
+    const response = await axios.post(
+			this.base_url + "wp/v2/list_element",
+			{
+        title: newElement,
+        status: "private",
+        classement: '',
+			},
+			{
+				headers:{
+						Authorization : "Bearer " + userData.token
+				}
+			}
+    ).catch( function() {
+      return { data : null };
+    } );
+    return response.data;
+  },
+
+  async patch(elementId, newTitle)
+	{
+		const userData = storage.get( "userData" );
+
+    const response = await axios.patch(
+			this.base_url + "wp/v2/list_element/" + elementId,
+			{
+        title: newTitle,
+			},
+			{
+				headers:{
+						Authorization : "Bearer " + userData.token
+				}
+			}
+    ).catch( function() {
+      return { data : null };
+    } );
+		console.log(response.data);
     return response.data;
   },
 
@@ -29,7 +71,7 @@ const listService =
 	{
 		const userData = storage.get( "userData" );
 
-    const response = await axios.delete(
+    await axios.delete(
 			this.base_url + "wp/v2/list_element/" + listId,
 			{
 				headers:{
@@ -37,11 +79,10 @@ const listService =
 				}
 			}
     ).catch( function() {
-			console.log('ERREUR INTERNE')
-      return { data : null };
+      return false;
     } );
 		
-    return response.data;
+    return true;
   }
 };
 

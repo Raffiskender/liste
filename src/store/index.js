@@ -4,13 +4,22 @@ import storage from '@/utils/storage'
 export default createStore({
   state: 
   {
-    isConnected: false
+    isConnected: false,
+		//userId:'',
   },
   getters: 
   {
   },
   mutations: 
   {
+		// rememberUserId(state){
+		// 	const userData = storage.get( "userData" );
+		// 	state.userId = userData.id;
+		// },
+		// forgetUserId(state){
+		// 	state.userId = '';
+		// },
+		
     userConnected(state)
     {
       state.isConnected = 'true';
@@ -29,6 +38,7 @@ export default createStore({
     {
       context.commit( "setConnected", false );
       storage.unset( "userData" );
+			//context.commit( "forgetUserId" );
 		},
 	},
   modules: {

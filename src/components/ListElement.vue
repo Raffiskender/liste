@@ -1,9 +1,11 @@
 <template>
 	<div class="container">
-		<p class="title"
+		<p 
+			
+			class="title"
 			@click="handleSwitchToEditMode"
 			v-bind:class = "{hide: this.editMode}"
-			>{{this.initialTitle}}
+			v-html="this.initialTitle">
 		</p>
 		<form @submit.prevent="handleSave({id})">
 			<input

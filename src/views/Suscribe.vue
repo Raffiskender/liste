@@ -32,21 +32,6 @@
           Vous devez saisir un login !
         </div>
       </label>
-			
-      <label>
-        Nom (pas obligatoire mais c'est mieux)
-        <input type="text" name="first_name" v-model="this.first_name" placeholder="first_name"/>
-        <!-- <div class="error" v-if="this.errors.first_nameEmpty">
-          Vous devez saisir un Nom !
-        </div> -->
-      </label>
-      <label>
-        Prénom (pas obligatoire non plus mais c'est mieux)
-        <input type="text" name="last_name" v-model="this.last_name" placeholder="Prénom"/>
-        <!-- <div class="error" v-if="this.errors.last_nameEmpty">
-          Vous devez saisir un Nom !
-        </div> -->
-      </label>
 
       <label>
         Mot de passe

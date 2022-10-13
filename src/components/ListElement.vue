@@ -5,7 +5,8 @@
 			class="title"
 			@click="handleSwitchToEditMode"
 			v-bind:class = "{hide: this.editMode}"
-			v-html="this.initialTitle">
+			v-html=this.cleanMessage(this.initialTitle)>
+			
 		</p>
 		<form @submit.prevent="handleSave({id})">
 			<input
@@ -51,11 +52,14 @@ export default
 		return {
 			editMode: false,
 			initialTitle: this.title,
-			newTitle: this.title
+			newTitle: this.cleanMessage(this.title)
 		}
 	},
 	
 	methods: {
+		cleanMessage(message) {
+      return this.$sanitize(message);
+    },
 		async handleDelete(number){
 
 			await listService.delete(number.id)

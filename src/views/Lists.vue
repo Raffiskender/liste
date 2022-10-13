@@ -54,7 +54,6 @@
 	</div>
 		</form>
 	</div>
-	
 	</section>
 </template>
 
@@ -83,6 +82,7 @@ export default{
 			engouthCaracteres: true,
 		}
 	},
+
   async created()
   {
     this.list = await listService.findAll();
@@ -205,7 +205,7 @@ button{
  .add-form{
 	width:100%;
 	max-width: 450px;
-	position:absolute;
-	bottom: 2.5em;
+	position:fixed;
+	bottom: 2.2em;
 }
 </style>

@@ -35,28 +35,28 @@
 
       <label>
         Mot de passe
-					<input
-						:class="['pwdInput', isPasswordValid()]"
-						:type="[this.pwdInputType()]"
-						name="password"
-						v-model="this.password"
-						@focus="this.handleFocusPasswordInput"
-						@blur="this.handleBlurPasswordInput"/>
+				<input
+					:class="['pwdInput', isPasswordValid()]"
+					:type="[this.pwdInputType()]"
+					name="password"
+					v-model="this.password"
+					@focus="this.handleFocusPasswordInput"
+					@blur="this.handleBlurPasswordInput"/>
 					
 				<img
 					@click="this.handleSeePwd()"
-					:class="[this.handleHideOpenEye()]"
+					v-bind:class="{'hide': !this.seePwd}"
 					src="@/assets/eye-slash-solid.svg"
 					alt=""
 					width="16">	
 				<img
 					@click="this.handleSeePwd()"
-					:class="[this.handleHideClosedEye()]"
+					v-bind:class="{'hide': this.seePwd}"
 					src="@/assets/eye-solid.svg"
 					alt=""
 					width="16">
 					
-				<div v-show="this.passwordfocus">
+				<div>
 					<ul>Doit contenir
 						<li :class="[isNumberOfCaracteresValid()]">entre 8 et 22 caractères,</li>
 						<li :class="[isCapitilizeCaractereValid()]">une majuscule,</li>
@@ -84,14 +84,14 @@
 					
 				<img
 				@click="this.handleSeePwdVerif()"
-				:class="[this.handleHideOpenEyeVerif()]"
+				v-bind:class="{'hide': !this.seePwdVerif}"
 				src="@/assets/eye-slash-solid.svg"
 				alt=""
 				width="16">	
 				
 				<img
 				@click="this.handleSeePwdVerif()"
-				:class="[this.handleHideClosedEyeVerif()]"
+				v-bind:class="{'hide': this.seePwdVerif}"
 				src="@/assets/eye-solid.svg"
 				alt=""
 				width="16">	
@@ -192,24 +192,11 @@
 			handleSeePwdVerif(){
 				this.seePwdVerif = !this.seePwdVerif;
 			},
-			handleHideOpenEye(){
-				return (this.seePwd) ? '' : 'hide';
-			},
-			handleHideClosedEye(){
-				return (this.seePwd) ? 'hide' : '';
-			},
-			
+					
 			handleBlurPwdVerif(){
 				this.seePwdVerif=false;
 			},
-			handleHideOpenEyeVerif(){
-				return (this.seePwdVerif) ? '' : 'hide';
-			},
-			
-			handleHideClosedEyeVerif(){
-				return (this.seePwdVerif) ? 'hide' : '';
-			},
-			
+						
 			pwdVerifInputType(){
 				return (this.seePwdVerif) ? 'text' : 'password';
 			},

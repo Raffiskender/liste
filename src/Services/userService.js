@@ -4,14 +4,15 @@ import storage from "@/utils/storage";
 const userService = 
 {
   // Propriété qui stocke la BASE URL de notre API
-  base_url : "https://listeback.raffiskender.com/wp-json",
+	//base_url : "http://localhost/Projets_Vue/ListeDeCouseBackend/wordpress/wp-json/",
+	base_url : "https://listeback.raffiskender.com/wp-json/",
 
 	success : '',
 
   // Méthode pour se connecter
   async login( p_login, p_password )
   {
-    const response = await axios.post( this.base_url + "/jwt-auth/v1/token", {
+    const response = await axios.post( this.base_url + "jwt-auth/v1/token", {
       username: p_login,
       password: p_password
     }).catch( function() {

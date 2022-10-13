@@ -20,13 +20,13 @@
 					
 				<img
 					@click="this.handleHidePwd()"
-					:class="[this.handleHideOpenEye()]"
+					v-bind:class="{'hide': !this.seePwd}"
 					src="@/assets/eye-slash-solid.svg"
 					alt=""
 					width="16">
 				<img
 					@click="this.handleShowPwd()"
-					:class="[this.handleHideClosedEye()]"
+					v-bind:class="{'hide': this.seePwd}"
 					src="@/assets/eye-solid.svg"
 					alt=""
 					width="16">	
@@ -82,14 +82,6 @@
 			
 			pwdInputType(){
 				return (this.seePwd) ? 'text' : 'password';
-			},
-			
-			handleHideOpenEye(){
-				return (this.seePwd) ? '' : 'hide';
-			},
-			
-			handleHideClosedEye(){
-				return (this.seePwd) ? 'hide' : '';
 			},
 			
       async handleFormSubmit()

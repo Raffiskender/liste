@@ -7,6 +7,11 @@ import router from './router'
 import store from './store'
 
 //library.add(fas);
+import Vue3Sanitize from "vue-3-sanitize";
+
+let defaults = Vue3Sanitize.defaults;
+
+defaults.allowedTags = [];
 
 createApp(App)
-.use(store).use(router).mount('#app')
+.use(store).use(router).use(Vue3Sanitize,defaults).mount('#app')

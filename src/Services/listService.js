@@ -4,6 +4,7 @@ import storage from "@/utils/storage";
 const listService =
 {
   // Propriété qui stocke la BASE URL de notre API
+	//base_url : "http://localhost/Projets_Vue/ListeDeCouseBackend/wordpress/wp-json/",
 	base_url : "https://listeback.raffiskender.com/wp-json/",
 
   // Méthode pour se connecter

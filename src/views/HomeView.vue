@@ -28,9 +28,7 @@
 	</p>
 </div>
 <div v-if="this.$store.state.isConnected">
-<h3>Bonjour {{this.getCurrentUsername()}}</h3>
-<p>
-</p>
+	<h3>Bonjour {{this.getCurrentUsername()}}</h3>
 </div>
 </template>
 
@@ -105,4 +103,6 @@ p.title{
 	color: blueviolet;
 	margin-top: 2em; 
 }
+
+
 </style>

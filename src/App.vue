@@ -42,9 +42,8 @@ h1, h2, h3, p, ul, li{
   color: #003e7c;
 	width: 100%;
 	max-width: 450px;
-	//min-height: calc(100vh - 2.2em);
-	height: 100%;
-	min-height:100vh;
+	min-height: calc(100vh - 2.2em);
+	height: calc(100% - 2.2em);
 	background-color: white;
 	
 }
@@ -53,7 +52,6 @@ body{
 	background-color: rgb(138, 138, 138);
 	display: flex;
 	justify-content: center;
-	height: 100%;
-	min-height:100vh;
+	height: 100;
 }
 </style>

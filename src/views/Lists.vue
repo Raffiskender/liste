@@ -30,10 +30,7 @@
 		</div>
 	</div>
 		<LoaderView v-else/>
-	
-	
-	
-	
+		
 	<div class="add-form">
 		<form @submit.prevent="this.handleFormSubmit" >
 			<label for="element"></label>
@@ -68,6 +65,7 @@ export default{
 		components: {
     ListElement,
 		LoaderView,
+		
 	},
 	// Protected properties
   data()
@@ -100,7 +98,7 @@ export default{
 		// getTheRubrique( oneListElmt ){
 		// 	return oneListElmt.rubrique.length === 0 ? '' : oneListElmt._embedded['wp:term'][0][0].name;
 		// },
-		
+
 		getTheUrgence( oneListElmt ){
 			return oneListElmt.urgence.length === 0 ? '' : oneListElmt._embedded['wp:term'][1][0].name;
 		},
@@ -154,6 +152,20 @@ export default{
 </script>
 
 <style lang="scss" scoped>
+.hide{
+	display: none;
+	animation-name: flipX;
+	animation: 0.3s rotate;
+}
+
+@keyframes flipX {
+	from{
+		width: 100%
+}
+	to{
+		width: 0;
+	}
+}
 .list{
 	text-align: left;
 	margin: 0;

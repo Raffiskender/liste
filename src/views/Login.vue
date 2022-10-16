@@ -17,19 +17,24 @@
 					name="password"
 					v-model="this.password"
 					@blur="[this.handleHidePwd()]"/>
-					
-				<img
-					@click="this.handleHidePwd()"
-					v-bind:class="{'hide': !this.seePwd}"
-					src="@/assets/eye-slash-solid.svg"
-					alt=""
-					width="16">
-				<img
+				
+				<font-awesome-icon
+					class="eye"
+					icon="fa-solid fa-eye"
 					@click="this.handleShowPwd()"
 					v-bind:class="{'hide': this.seePwd}"
 					src="@/assets/eye-solid.svg"
 					alt=""
-					width="16">	
+					width="16" /> 
+				<font-awesome-icon
+					class="eye"
+					icon="fa-solid fa-eye-slash"
+					@click="this.handleHidePwd()"
+					v-bind:class="{'hide': !this.seePwd}"
+					src="@/assets/eye-slash-solid.svg"
+					alt=""
+					width="16"/>
+
 				
 				<div class="error" v-if="this.errors.passwordEmpty">
           Vous devez saisir un mot de passe !
@@ -174,7 +179,7 @@ label {
 			}
     }
   }
-  img{
+  .eye{
 		color:#003e7c;
 		font-size: 1.1em;
 		position:relative;

@@ -42,27 +42,81 @@
 					v-model="this.password"
 					@focus="this.handleFocusPasswordInput"
 					@blur="this.handleBlurPasswordInput"/>
-					
-				<img
-					@click="this.handleSeePwd()"
-					v-bind:class="{'hide': !this.seePwd}"
-					src="@/assets/eye-slash-solid.svg"
-					alt=""
-					width="16">	
-				<img
+				
+				
+				<font-awesome-icon
+					icon="fa-solid fa-eye"
+					class="eye"
 					@click="this.handleSeePwd()"
 					v-bind:class="{'hide': this.seePwd}"
-					src="@/assets/eye-solid.svg"
 					alt=""
-					width="16">
+					width="16" />	
 					
+				<font-awesome-icon
+					icon="fa-solid fa-eye-slash"
+					class="eye"
+					@click="this.handleSeePwd()"
+					v-bind:class="{'hide': !this.seePwd}"
+					alt=""
+					width="16" />	
+
 				<div>
 					<ul>Doit contenir
-						<li :class="[isNumberOfCaracteresValid()]">entre 8 et 22 caractères,</li>
-						<li :class="[isCapitilizeCaractereValid()]">une majuscule,</li>
-						<li :class="[isMinimizeCaractereValid()]">une minuscule</li>
-						<li :class="[isNumberValid()]">un chiffre</li>
-						<li :class="[isSpecialCaractereValid()]">un caractère spécial</li>
+						<div>
+							<font-awesome-icon	
+								icon="fa-regular fa-circle-check"
+								v-bind:class="{'hide': isNumberOfCaracteresValid()=='has-error' || this.password == ''}"
+								style="color:green" />
+							<font-awesome-icon
+								icon="fa-regular fa-circle-xmark"
+								v-bind:class="{'hide': isNumberOfCaracteresValid()=='has-success'}"
+								style="color:red" />
+							<li :class="[isNumberOfCaracteresValid()]">entre 8 et 22 caractères,</li>
+						</div>
+						<div>
+							<font-awesome-icon	
+								icon="fa-regular fa-circle-check"
+								v-bind:class="{'hide': isCapitilizeCaractereValid()=='has-error' || this.password == ''}"
+								style="color:green" />
+							<font-awesome-icon
+								icon="fa-regular fa-circle-xmark"
+								v-bind:class="{'hide': isCapitilizeCaractereValid()=='has-success'}"
+								style="color:red" />
+							<li :class="[isCapitilizeCaractereValid()]">une majuscule,</li>
+						</div>
+						<div>
+							<font-awesome-icon	
+								icon="fa-regular fa-circle-check"
+								v-bind:class="{'hide': isMinimizeCaractereValid()=='has-error' || this.password == ''}"
+								style="color:green" />
+							<font-awesome-icon
+								icon="fa-regular fa-circle-xmark"
+								v-bind:class="{'hide': isMinimizeCaractereValid()=='has-success'}"
+								style="color:red" />
+							<li :class="[isMinimizeCaractereValid()]">une minuscule</li>
+						</div>
+						<div>
+							<font-awesome-icon	
+								icon="fa-regular fa-circle-check"
+								v-bind:class="{'hide': isNumberValid()=='has-error' || this.password == ''}"
+								style="color:green" />
+							<font-awesome-icon
+								icon="fa-regular fa-circle-xmark"
+								v-bind:class="{'hide': isNumberValid()=='has-success'}"
+								style="color:red" />
+							<li :class="[isNumberValid()]">un chiffre</li>
+						</div>
+						<div>
+							<font-awesome-icon	
+								icon="fa-regular fa-circle-check"
+								v-bind:class="{'hide': isSpecialCaractereValid()=='has-error' || this.password == ''}"
+								style="color:green" />
+							<font-awesome-icon
+								icon="fa-regular fa-circle-xmark"
+								v-bind:class="{'hide': isSpecialCaractereValid()=='has-success'}"
+								style="color:red" />
+							<li :class="[isSpecialCaractereValid()]">un caractère spécial</li>
+						</div>
 					</ul>
 				</div>
         <div class="error" v-if="this.errors.passwordEmpty">
@@ -82,19 +136,21 @@
 					@blur="this.handleBlurPwdVerif()"
 					v-model="this.passwordVerify" />
 					
-				<img
-				@click="this.handleSeePwdVerif()"
-				v-bind:class="{'hide': !this.seePwdVerif}"
-				src="@/assets/eye-slash-solid.svg"
-				alt=""
-				width="16">	
+				<font-awesome-icon
+					icon="fa-solid fa-eye"
+					class="eye"
+					v-bind:class="{'hide': this.seePwdVerif}"
+					@click="this.handleSeePwdVerif()"
+					alt=""
+					width="16" />	
 				
-				<img
-				@click="this.handleSeePwdVerif()"
-				v-bind:class="{'hide': this.seePwdVerif}"
-				src="@/assets/eye-solid.svg"
-				alt=""
-				width="16">	
+				<font-awesome-icon
+					icon="fa-solid fa-eye-slash"
+					class="eye"
+					v-bind:class="{'hide': !this.seePwdVerif}"
+					@click="this.handleSeePwdVerif()"
+					alt=""
+					width="16" />	
 				
         <div class="error" v-if="this.errors.passwordVerifyEmpty">
           Vous devez saisir une deuxième fois votre mot de passe !
@@ -166,8 +222,8 @@
         },
 				errorMessage:'',
 				regMail:/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-				regPassword : /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,22}$)/,
-				regNumberOfCaracteres:/(?=.{8,22}$)/,
+				regPassword : /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(^.{8,22}$)/,
+				regNumberOfCaracteres:/(^.{8,22}$)/,
 				regSpecialCaractere:/(?=.*[^A-Za-z0-9])/,
 				regCapitilizeCaractere: /(?=.*[A-Z])/,
 				regMinimizeCaractere:/(?=.*[a-z])/,
@@ -363,28 +419,27 @@ form {
 		list-style-type: none;
 		font-size: 0.9em;
 		color:rgb(0, 128, 0); margin:0;
+		&>div{
+			display: flex;
+			align-items: center;
+		}
 	}
 	li{
+			margin-left: 0.5em;
 			color:red;
-			&::before{
-				margin-left: 1em;
-				content: "\2613 ";
-				word-spacing: 0.5em;
-				//color: rgb(226, 43, 43);
-			}
+			//&::before{
+			// 	margin-left: 1em;
+			// 	content: "\2613 ";
+			//	word-spacing: 0.5em;
+			// 	//color: rgb(226, 43, 43);
+			//}
 		
 		&.has-success{
 			color:green;
-			&::before{
-				margin-left: 1em;
-				content: "\1F5F8 ";
-				word-spacing: 0.5em;
-				//color: green;
-			}
 		}
 	}
 
-	img{
+	.eye{
 		color:#003e7c;
 		font-size: 1.1em;
 		position:relative;
@@ -398,6 +453,9 @@ form {
 		}
 	}
 	
+	.hide{
+		display: none;
+	}
 	
 	.error{
 		color : rgb(133, 0, 0);

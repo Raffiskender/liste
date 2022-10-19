@@ -13,7 +13,7 @@ const listService =
 		const userData = storage.get( "userData" );
 
     const response = await axios.get(
-			this.base_url + "wp/v2/list_element?author=" + userData.user_id + "&status=private&_embed=true",
+			this.base_url + "wp/v2/list_element?author=" + userData.user_id + "&status=private&_embed=true&per_page=100",
 			{
 				headers:{
 						Authorization : "Bearer " + userData.token

@@ -62,18 +62,20 @@
 
 				<div>
 					<ul>Doit contenir
-						<div>
+						<div
+						:class="[isNumberOfCaracteresValid()]">
 							<font-awesome-icon	
 								icon="fa-regular fa-circle-check"
 								v-bind:class="{'hide': isNumberOfCaracteresValid()=='has-error' || this.password == ''}"
-								style="color:green" />
+								/>
 							<font-awesome-icon
 								icon="fa-regular fa-circle-xmark"
 								v-bind:class="{'hide': isNumberOfCaracteresValid()=='has-success'}"
-								style="color:red" />
-							<li :class="[isNumberOfCaracteresValid()]">entre 8 et 22 caractères,</li>
+								/>
+							<li>entre 8 et 22 caractères,</li>
 						</div>
-						<div>
+						<div 
+						:class="[isCapitilizeCaractereValid()]">
 							<font-awesome-icon	
 								icon="fa-regular fa-circle-check"
 								v-bind:class="{'hide': isCapitilizeCaractereValid()=='has-error' || this.password == ''}"
@@ -84,7 +86,7 @@
 								style="color:red" />
 							<li :class="[isCapitilizeCaractereValid()]">une majuscule,</li>
 						</div>
-						<div>
+						<div :class ="[isMinimizeCaractereValid()]">
 							<font-awesome-icon	
 								icon="fa-regular fa-circle-check"
 								v-bind:class="{'hide': isMinimizeCaractereValid()=='has-error' || this.password == ''}"
@@ -95,7 +97,7 @@
 								style="color:red" />
 							<li :class="[isMinimizeCaractereValid()]">une minuscule</li>
 						</div>
-						<div>
+						<div :class ="[isNumberValid()]">
 							<font-awesome-icon	
 								icon="fa-regular fa-circle-check"
 								v-bind:class="{'hide': isNumberValid()=='has-error' || this.password == ''}"
@@ -106,7 +108,7 @@
 								style="color:red" />
 							<li :class="[isNumberValid()]">un chiffre</li>
 						</div>
-						<div>
+						<div :class="[isSpecialCaractereValid()]">
 							<font-awesome-icon	
 								icon="fa-regular fa-circle-check"
 								v-bind:class="{'hide': isSpecialCaractereValid()=='has-error' || this.password == ''}"
@@ -261,28 +263,28 @@
 			},
 			
 			isNumberOfCaracteresValid() {
-				return (this.password == "") ? "" : (this.regNumberOfCaracteres.test(this.password)) ? 'has-success' : 'has-error';
+				return (this.password == "") ? "has-error" : (this.regNumberOfCaracteres.test(this.password)) ? 'has-success' : 'has-error';
 					
 			},
 			isSpecialCaractereValid() {
-				return (this.password == "") ? "" : (this.regSpecialCaractere.test(this.password)) ? 'has-success' : 'has-error';
+				return (this.password == "") ? "has-error" : (this.regSpecialCaractere.test(this.password)) ? 'has-success' : 'has-error';
 					
 			},
 			isCapitilizeCaractereValid() {
-				return (this.password == "") ? "" : (this.regCapitilizeCaractere.test(this.password)) ? 'has-success' : 'has-error';
+				return (this.password == "") ? "has-error" : (this.regCapitilizeCaractere.test(this.password)) ? 'has-success' : 'has-error';
 					
 			},
 			isMinimizeCaractereValid() {
-				return (this.password == "") ? "" : (this.regMinimizeCaractere.test(this.password)) ? 'has-success' : 'has-error';
+				return (this.password == "") ? "has-error" : (this.regMinimizeCaractere.test(this.password)) ? 'has-success' : 'has-error';
 					
 			},
 			isNumberValid() {
-				return (this.password == "") ? "" : (this.regNumber.test(this.password)) ? 'has-success' : 'has-error';
+				return (this.password == "") ? "has-error" : (this.regNumber.test(this.password)) ? 'has-success' : 'has-error';
 					
 			},
 					
 			isPasswordValid() {
-				return (this.password == "") ? "" : (this.regPassword.test(this.password)) ? 'has-success' : 'has-error';
+				return (this.password == "") ? "has-error" : (this.regPassword.test(this.password)) ? 'has-success' : 'has-error';
 					
 			},
 			isPasswordValidationOk() {
@@ -415,6 +417,7 @@ form {
 			background: #bbb;
 		}
   }
+	
 	ul{
 		list-style-type: none;
 		font-size: 0.9em;
@@ -422,23 +425,24 @@ form {
 		&>div{
 			display: flex;
 			align-items: center;
+				&.has-error{
+				color:red;
+				transition: 0.5s;
+				transform: rotateX(0deg)
+				}
+			
+			&.has-success{
+				color:green;
+				transition: 0.5s;
+				transform: rotateX(360deg)
+
+			}
 		}
 	}
+	
 	li{
 			margin-left: 0.5em;
-			color:red;
-			//&::before{
-			// 	margin-left: 1em;
-			// 	content: "\2613 ";
-			//	word-spacing: 0.5em;
-			// 	//color: rgb(226, 43, 43);
-			//}
-		
-		&.has-success{
-			color:green;
-		}
 	}
-
 	.eye{
 		color:#003e7c;
 		font-size: 1.1em;

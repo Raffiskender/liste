@@ -35,7 +35,15 @@
 		<form @submit.prevent="this.handleFormSubmit" >
 			<label for="element"></label>
 			<input type="text" id="element" v-model="this.newElement" placeholder="Nouvel élément">
-			<button>Ajouter</button>
+			<div class="button-container">
+				<button :disabled="this.disableButton" v-bind:class="{'hide': this.disableButton}">{{this.buttonContent}}</button>
+					<div class="loading" v-bind:class="{'hide': !this.disableButton}">
+						<div class="loading__circle loading__circle--color-blue"></div>
+						<div class="loading__circle loading__circle--color-red"></div>
+						<div class="loading__circle loading__circle--color-yellow"></div>
+						<div class="loading__circle loading__circle--color-green"></div>
+					</div>
+			</div>
 			<!-- <select @change="handleOnChange" name="catégorie" id="catégorie">
 				<option value="0">Catégoriser ?</option>
 				<option
@@ -45,11 +53,11 @@
 				<option class = "new" value="new">Nouvelle</option>
 			</select> -->
 			<input  v-if="this.newCategoryAppear" type="text" id="element" v-model="this.newElement" placeholder="Nouvelle rubrique">
+		</form>
 
 	<div v-if="!this.engouthCaracteres" >
 		<p>entrez au moins une lettre</p>
 	</div>
-		</form>
 	</div>
 	</section>
 </template>
@@ -78,6 +86,8 @@ export default{
 			categoryAppear: false,
 			newCategoryAppear: false,
 			engouthCaracteres: true,
+			disableButton: false,
+			buttonContent: 'Ajouter',
 		}
 	},
 
@@ -98,7 +108,7 @@ export default{
 		// getTheRubrique( oneListElmt ){
 		// 	return oneListElmt.rubrique.length === 0 ? '' : oneListElmt._embedded['wp:term'][0][0].name;
 		// },
-
+		
 		getTheUrgence( oneListElmt ){
 			return oneListElmt.urgence.length === 0 ? '' : oneListElmt._embedded['wp:term'][1][0].name;
 		},
@@ -113,9 +123,12 @@ export default{
 		async handleFormSubmit(){
 			//* Cette variable sert à la gestion d'erreur
 			//* Je l'initialise à true 
-			this.engouthCaracteres = true
+			this.engouthCaracteres = true;
 			
 			if (this.newElement.length > 1){
+			this.disableButton = true;
+			this.buttonContent = ''
+			
 			//*envoie de la requête à la base de donnée via un await 
 				await listService.create(this.newElement);
 				//* quand le nouvel élément est entré dans l
@@ -128,6 +141,8 @@ export default{
 					}
 				}
 			this.newElement= '';
+			this.disableButton = false;
+			this.buttonContent = 'Ajouter'
 			}
 			else{
 				this.engouthCaracteres = null;
@@ -152,20 +167,8 @@ export default{
 </script>
 
 <style lang="scss" scoped>
-.hide{
-	display: none;
-	animation-name: flipX;
-	animation: 0.3s rotate;
-}
 
-@keyframes flipX {
-	from{
-		width: 100%
-}
-	to{
-		width: 0;
-	}
-}
+
 .list{
 	text-align: left;
 	margin: 0;
@@ -177,20 +180,12 @@ h1{
 	font-family: Arial, Helvetica, sans-serif;
 }
 
-// select{
-// 	font-family: 'Quicksand',  Arial, Helvetica, sans-serif;
-// 	margin:.2em 0.5em 0.2em 0.5em;
-// 	padding: 0.5em 1em;
-// 	font-weight:800;
-// 	background: rgb(216, 226, 253);
-// 	border: none;
-// }
-// select option{
-//         background-color:#0F0;}
-
-// .new{
-// 	color: red;
-// }
+form{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
 
 button{
 
@@ -219,5 +214,64 @@ button{
 	max-width: 450px;
 	position:fixed;
 	bottom: 2.2em;
+}
+.button-container{
+width: 10em;
+height: 2.5em;	
+	background: rgb(216, 226, 253);
+
+}
+ .loading {
+  padding: 0.3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading__circle {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  margin: 0 0.2em;
+    animation-name: bump; 
+    animation-duration: 2s; 
+    animation-iteration-count: infinite; 
+}
+
+.loading__circle--color-blue {
+  background-color: #4285f4;
+    animation-delay:0;
+
+}
+.loading__circle--color-red {
+  background-color: #ea4335;
+  animation-delay:0.5s;
+}
+.loading__circle--color-yellow {
+  background-color: #fbbc05;
+  animation-delay:1s;
+    
+}
+.loading__circle--color-green {
+  background-color: #34a853;
+  animation-delay:1.5s;
+}
+
+@keyframes bump {
+    from {
+    transform: scale(1);
+    }
+    25% {
+    transform: scale(1.4);
+    }
+    50%{
+    transform: scale(1);
+    }
+    100%{
+    transform:scale(1);
+    }
+}
+.hide{
+	display: none;
 }
 </style>

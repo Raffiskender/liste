@@ -1,7 +1,7 @@
 <template>
-    <div class="loading">
-        <div class="loading__circle loading__circle--color-blue"></div>
-        <div class="loading__circle loading__circle--color-red"></div>
+	<div class="loading">
+		<div class="loading__circle loading__circle--color-blue"></div>
+		<div class="loading__circle loading__circle--color-red"></div>
     <div class="loading__circle loading__circle--color-yellow"></div>
 		<div class="loading__circle loading__circle--color-green"></div>
 	</div>
@@ -19,7 +19,7 @@ export default {
   padding: 0.625rem;
   display: flex;
   justify-content: center;
-    align-items: center;
+  align-items: center;
 }
 
 .loading__circle {

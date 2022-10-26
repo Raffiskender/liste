@@ -1,67 +1,70 @@
 <template>
-	<section>
-		<div v-if="!this.$store.state.isConnected">
+		<nav>
 			<ul>
-					<li>
-						<router-link :to="{name : 'login'}" >
-						Connection
-						</router-link>
-					</li>
-					<li>
-						<router-link :to="{name : 'suscribe'}" >
-						Inscription
-						</router-link>
-					</li>
-			</ul>
-		</div>
-		<div v-if="this.$store.state.isConnected">
-			<ul>
-				<li @click="this.$store.dispatch('userDisconnected')">
-          <router-link :to="{name : 'home'}">
+				<li v-if="!this.$store.state.isConnected">
+					<router-link :to="{name : 'login'}" >
+					Connection
+					</router-link>
+				</li>
+				<li v-if="!this.$store.state.isConnected">
+					<router-link :to="{name : 'suscribe'}" >
+					Inscription
+					</router-link>
+				</li>
+				<li v-if="this.$store.state.isConnected" @click="this.$store.dispatch('userDisconnected')">
+					<router-link :to="{name : 'home'}">
 						<span>Déconnexion</span>
 					</router-link>  
-        </li>
-				<li>
-          <router-link :to="{name : 'list'}" >
+				</li>
+				<li v-if="this.$store.state.isConnected">
+					<router-link :to="{name : 'list'}" >
 						Liste
 						</router-link>
-        </li>
-				<li>
-          Profil
-        </li>
+				</li>
+				<li v-if="this.$store.state.isConnected">
+					Profil
+				</li>
 			</ul>
-		</div>
-	</section>
+		</nav>
 </template>
 
 <script>
 export default {
-	name: 'FooterView'
+	name: 'NavCpnt'
 }
 </script>
 
 <style lang="scss" scoped>
-section{
+
+// /* apply a natural box layout model to all elements */
+//  *, *:before, *:after {
+//   -moz-box-sizing : border-box;
+//   -webkit-box-sizing: border-box;
+//   box-sizing: border-box;
+// }
+nav{
 	//border: 1px solid #f0f;
-	height:2.2em;
+	height:2.3em;
 	background: rgb(216, 226, 253);
-	
+	position: fixed;
+	bottom:0px;
 	width: 100%;
 	max-width: 450px;
 	padding:0;
-	position: fixed;
-	bottom: 0em;
+
 	// background-color: white;
 }
+
 ul{
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
-	align-items: center;
+	// align-items: center;
 	padding: 0;
 	margin:0;
 	margin-top: 0em;
 }
+
 a{
 	color :rgb(0, 0, 0);
 	text-decoration: none

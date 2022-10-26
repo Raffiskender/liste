@@ -140,9 +140,14 @@
 
 <style lang="scss" scoped>
 
+/*This min-height section is to force mozilla android to keep the nav-bar.*/
+section{
+	min-height: calc(100vh + 0.05em);
+}
+
 h2 {
   text-align: center;
-  margin: 1em auto;
+  padding-top: 1em;
   font-size: 2em;
   font-weight: bold;
   text-transform: uppercase;
@@ -195,7 +200,7 @@ label {
 
   button {
     display: block;
-    margin: 5px 0;
+    margin: 5px 0 2.3em 0;
     width: 100%;
     padding: 1em 1.5em;
     border-radius: 0.5em;

@@ -348,10 +348,13 @@
 </script>
 
 <style lang="scss" scoped>
+section{
+	min-height: calc(100vh + 0.05em);
+}
 
 h2 {
   text-align: center;
-  margin: 1em auto;
+  padding-top: 1em;
   font-size: 2em;
   font-weight: bold;
   text-transform: uppercase;
@@ -397,7 +400,7 @@ form {
 
   button {
     display: block;
-    margin: 5px 0;
+    margin: 5px 0 2.3em 0;
     width: 100%;
     padding: 1em 1.5em;
     border-radius: 0.5em;

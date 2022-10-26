@@ -1,64 +1,59 @@
 <template>
-<section>
-	<h1>
-		Ma liste
-	</h1>
+	<section>
+		<h1>
+			Ma liste
+		</h1>
 
-	<!-- <div  v-if="this.list.length == 0" class="list" >
-		Commencez en ajoutant un élément dans votre liste !
-	</div> -->
-	
-	<div  v-if="this.list" class="list" >
-		<div v-if="this.list.length == 0">
-			Commencez en créant votre premier élément !
-		</div>
-		<div v-else>
-			<ListElement 
-				v-for="listElement in this.newElements"
-				v-bind:key="listElement.id"
-				:title="listElement"
-				/>
-		
-			<ListElement 
-				v-for="listElement in this.list"
-				v-bind:key="listElement.id"
-				:title="listElement.title.rendered"
-				:urgence="this.getTheUrgence( listElement )"
-				:id="listElement.id"
-				@element-deleted="this.handleRemoveFromList"
-				/>
-		</div>
-	</div>
-		<LoaderView v-else/>
-		
-	<div class="add-form">
-		<form @submit.prevent="this.handleFormSubmit" >
-			<label for="element"></label>
-			<input type="text" id="element" v-model="this.newElement" placeholder="Nouvel élément">
-			<div class="button-container">
-				<button :disabled="this.disableButton" v-bind:class="{'hide': this.disableButton}">{{this.buttonContent}}</button>
-					<div class="loading" v-bind:class="{'hide': !this.disableButton}">
-						<div class="loading__circle loading__circle--color-blue"></div>
-						<div class="loading__circle loading__circle--color-red"></div>
-						<div class="loading__circle loading__circle--color-yellow"></div>
-						<div class="loading__circle loading__circle--color-green"></div>
-					</div>
+		<!-- <div  v-if="this.list.length == 0" class="list" >
+			Commencez en ajoutant un élément dans votre liste !
+		</div> -->
+		<div v-if="this.list" >
+			<div class="list">
+				<div v-if="this.list.length == 0">
+					Commencez en créant votre premier élément !
+				</div>
+				<div v-else>
+					<ListElement 
+						v-for="listElement in this.newElements"
+						v-bind:key="listElement.id"
+						:title="listElement"
+						/>
+				
+					<ListElement 
+						v-for="listElement in this.list"
+						v-bind:key="listElement.id"
+						:title="listElement.title.rendered"
+						:urgence="this.getTheUrgence( listElement )"
+						:id="listElement.id"
+						@element-deleted="this.handleRemoveFromList"
+						/>
+				</div>
 			</div>
-			<!-- <select @change="handleOnChange" name="catégorie" id="catégorie">
-				<option value="0">Catégoriser ?</option>
-				<option
-				v-for="currentRubrique of this.allRubriques"
-				v-bind:key="currentRubrique.id"
-				:value="currentRubrique.id">{{currentRubrique.name}}</option>
-				<option class = "new" value="new">Nouvelle</option>
-			</select> -->
-			<input  v-if="this.newCategoryAppear" type="text" id="element" v-model="this.newElement" placeholder="Nouvelle rubrique">
-		</form>
+			<div class="add-form">
+				<form @submit.prevent="this.handleFormSubmit" >
+					<label for="element"></label>
+					<input type="text" id="element" v-model="this.newElement" placeholder="Nouvel élément">
+					<button class="button" :disabled="this.disableButton" v-bind:class="{'hide': this.disableButton}">{{this.buttonContent}}</button>
+					
+					<SpinnerBtn v-if="this.disableButton" />
+					
+					<!-- <select @change="handleOnChange" name="catégorie" id="catégorie">
+						<option value="0">Catégoriser ?</option>
+						<option
+						v-for="currentRubrique of this.allRubriques"
+						v-bind:key="currentRubrique.id"
+						:value="currentRubrique.id">{{currentRubrique.name}}</option>
+						<option class = "new" value="new">Nouvelle</option>
+					</select> -->
+					<input  v-if="this.newCategoryAppear" type="text" id="element" v-model="this.newElement" placeholder="Nouvelle rubrique">
+				</form>
 
-	<div v-if="!this.engouthCaracteres" >
-		<p>entrez au moins une lettre</p>
-	</div>
-	</div>
+				<div v-if="!this.engouthCaracteres" >
+					<p>Entrez au moins une lettre</p>
+				</div>
+			</div>
+		</div>
+		<LoaderView v-else/>
 	</section>
 </template>
 
@@ -66,6 +61,7 @@
 import listService from '@/Services/listService';
 import ListElement from '@/components/ListElement';
 import LoaderView from '@/components/Layout/Loading.vue';
+import SpinnerBtn from '@/components/SpinnerButtonComponent.vue'
 //import rubriqueService from '@/Services/rubriqueService';
 
 export default{
@@ -73,6 +69,7 @@ export default{
 		components: {
     ListElement,
 		LoaderView,
+		SpinnerBtn,
 		
 	},
 	// Protected properties
@@ -168,16 +165,22 @@ export default{
 
 <style lang="scss" scoped>
 
+section{
+	min-height: calc(100vh + 0.05em);
+}
 
 .list{
 	text-align: left;
 	margin: 0;
-	height:auto;
+	//max-height:60vh;
 	overflow: auto;
+	//border : 1px solid #0f0
+	padding-bottom: 5em;
 }
 h1{
 	text-align: center;
 	font-family: Arial, Helvetica, sans-serif;
+	padding-top: 1.0em;
 }
 
 form{
@@ -187,10 +190,10 @@ form{
 	justify-content: center;
 }
 
-button{
+.button{
 
 	font-family: 'Quicksand',  Arial, Helvetica, sans-serif;
-	margin:.2em 0.5em 0.2em 0.5em;
+	margin:.2em .5em .2em .5em;
 	background: rgb(216, 226, 253);
 	padding: 0.5em 1em;
 	list-style-type: none;
@@ -198,7 +201,8 @@ button{
 	font-weight:800;
 	border-radius: 0px;
 	border: none;
-	width: 12em;
+	width: 8em;
+	height: 2.5em;
 	// box-shadow: 4px 4px 5px #555;
 	transition: 0.3s;
 	cursor:pointer;
@@ -209,68 +213,15 @@ button{
 			background: darken(rgb(216, 226, 253), 7.5%);
 		}
 }
- .add-form{
+.add-form{
+	background: #fff;
 	width:100%;
 	max-width: 450px;
 	position:fixed;
 	bottom: 2.2em;
-}
-.button-container{
-width: 10em;
-height: 2.5em;	
-	background: rgb(216, 226, 253);
-
-}
- .loading {
-  padding: 0.3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	// border: solid 1px #f0f;
 }
 
-.loading__circle {
-  width: 1em;
-  height: 1em;
-  border-radius: 50%;
-  margin: 0 0.2em;
-    animation-name: bump; 
-    animation-duration: 2s; 
-    animation-iteration-count: infinite; 
-}
-
-.loading__circle--color-blue {
-  background-color: #4285f4;
-    animation-delay:0;
-
-}
-.loading__circle--color-red {
-  background-color: #ea4335;
-  animation-delay:0.5s;
-}
-.loading__circle--color-yellow {
-  background-color: #fbbc05;
-  animation-delay:1s;
-    
-}
-.loading__circle--color-green {
-  background-color: #34a853;
-  animation-delay:1.5s;
-}
-
-@keyframes bump {
-    from {
-    transform: scale(1);
-    }
-    25% {
-    transform: scale(1.4);
-    }
-    50%{
-    transform: scale(1);
-    }
-    100%{
-    transform:scale(1);
-    }
-}
 .hide{
 	display: none;
 }

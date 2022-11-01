@@ -35,7 +35,7 @@ const userService =
       {
         // On appelle l'API WP pour vérifier la validité du token
         await axios.post( 
-          this.base_url + "/jwt-auth/v1/token/validate",
+          this.base_url + "jwt-auth/v1/token/validate",
           null, // On envoi pas de données à cet endpoint uniquement un Header
           {
             // On met notre token dans le header Authorization de la requête
@@ -48,7 +48,7 @@ const userService =
           return false;
         } );
 
-        // Si on arrive jusqu'ici c'est que tout est bon, le token est valide, on est connecté
+        // Si on arrive jusqu'ici c'est que tout est bon, le token est valide. On va tout de suite vérifier que notre user est bien "confirmed". on est connecté
         // console.log( response );
         return true;
       }
@@ -57,14 +57,12 @@ const userService =
     return false;
   },
 
-	async suscribe(eMail, login, firstName, lastName, password) {
+	async suscribe(eMail, login, password) {
 		this.success = 1;
 		const response = await axios.post( 
-			this.base_url + "/wp/v2/users",
+			this.base_url + "wp/v2/users",
 			{
 				username   :login,
-				first_name :firstName,
-				last_name  :lastName,
 				email      :eMail,
 				password   :password,
 				roles      :['author'],
@@ -87,7 +85,21 @@ const userService =
 			'response': response.response.data,
 			}
 		}
+	},
+
+  async userConfirmation( user, key ){
+			const response = await axios.post( 
+			this.base_url + "liste-de-course/v1/confirm",
+			{
+				user :user,
+				key  :key,
+
+			}).catch( function(){
+					return { data : null };
+			});
+    return response.data;
 	}
+	
 };
 
 export default userService;

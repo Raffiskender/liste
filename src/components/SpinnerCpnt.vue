@@ -1,12 +1,10 @@
 <template>
-	<button disabled>
 		<div>
 		</div>
-	</button>
 </template>
 <script>
 export default {
-	name : 'SpinnerBtn'
+	name : 'SpinnerCpnt'
 }
 </script>
 
@@ -29,7 +27,6 @@ button{
 div{
 	height: 1.3em;
 	width: 1.3em;
-
   border:3px solid #ff00c8;
   border-top:3px solid rgb(216, 226, 253);
   border-radius:50%;

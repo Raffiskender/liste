@@ -23,7 +23,6 @@
 						v-for="listElement in this.list"
 						v-bind:key="listElement.id"
 						:title="listElement.title.rendered"
-						:urgence="this.getTheUrgence( listElement )"
 						:id="listElement.id"
 						@element-deleted="this.handleRemoveFromList"
 						/>
@@ -106,9 +105,9 @@ export default{
 		// 	return oneListElmt.rubrique.length === 0 ? '' : oneListElmt._embedded['wp:term'][0][0].name;
 		// },
 		
-		getTheUrgence( oneListElmt ){
-			return oneListElmt.urgence.length === 0 ? '' : oneListElmt._embedded['wp:term'][1][0].name;
-		},
+		// getTheUrgence( oneListElmt ){
+		// 	return oneListElmt.urgence.length === 0 ? '' : oneListElmt._embedded['wp:term'][1][0].name;
+		// },
 		
 		handleRemoveFromList(elementId){
 			//* on recrée le tableau d'objet en retirant celui dont l'id est en paramètre

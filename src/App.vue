@@ -47,8 +47,8 @@ body{
 	min-height: 100vh;
 	width: 100%;
 	max-width: 450px;
-	background-color: rgb(255, 255, 255);
-	box-shadow: 0px 0px 15px grey ;
+	background-color: rgb(236, 236, 236);
+	box-shadow: 0px 0px 15px rgb(136, 136, 136) ;
 	margin: 0 auto;
 	
 	

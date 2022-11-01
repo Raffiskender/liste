@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
@@ -21,10 +21,15 @@ const routes = [
     name: 'list',
     component: () => import('@/views/Lists.vue')
   },
+  {
+    path: '/confirmation',
+    name: 'confirmation',
+    component: () => import('@/views/confirme.vue'),
+  },
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 

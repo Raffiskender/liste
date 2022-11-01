@@ -44,9 +44,13 @@
       <div class="error" v-if="this.errors.loginFailed" style="font-weight: bold; margin-bottom: 1em; text-align: center;">
         Identifiants incorrects
       </div>
+      <div class="error" v-if="this.errors.unconfirmedUser" style="font-weight: bold; margin-bottom: 1em; text-align: center;">
+				Vous ne pouvez pas vous connecter car votre email n'a pas été vérifié !
+      </div>
 
-      <button :disabled="this.login == '' || this.password == ''">
-        Se connecter
+      <button :disabled="this.login == '' || this.password == '' || this.awaiting">
+        <span v-if="!this.awaiting">Se connecter</span>
+				<SpinnerCpnt v-else/>
       </button>
     </form>
   </section>
@@ -55,10 +59,13 @@
 <script>
   import userService from "@/Services/userService";
   import storage     from "@/utils/storage";
-	
-  export default 
+	import SpinnerCpnt from "@/components/SpinnerCpnt.vue";
+  export default
   {
     name: "LoginView",
+		
+		components:{
+			SpinnerCpnt },
 		
     data()
     {
@@ -66,11 +73,13 @@
         login: "",
         password: "",
 				seePwd:false,
+				awaiting:false,
 				
         errors : {
           loginEmpty: false,
           passwordEmpty: false,
           loginFailed: false,
+					unconfirmedUser:false,
         }
       }
     },
@@ -94,7 +103,8 @@
 
         // On retire l'erreur précédente
         this.errors.loginFailed = false;
-
+				this.errors.unconfirmedUser = false;
+				this.awaiting = true
         // --- Vérification des données du formulaire --- //
 
         // En version raccourcie : on stocke le résultat de la condition dans la variable
@@ -109,33 +119,42 @@
           // Envoie de la requette à l'endpoint JWT et récupération d'un token de connexion
           let data = await userService.login( this.login, this.password );
 
+          storage.set( "userData", data );
+					
+					if (data == null){
+						this.errors.loginFailed = true;
+						this.awaiting = false
+					}
           // Stokage du token dans le localStorage
           // L'objet data sera convertit en JSON
-          storage.set( "userData", data );
 
           // ON AWAIT LE RETOUR DE isConnected() pour la validation du token, sinon on reçoit une Promise et non un booléen !
-          if( await userService.isConnected() )
-          {
+          else if( data.user_confirmed[0] == ['0'] ){
+						this.errors.unconfirmedUser = true
+						this.$store.dispatch('userDisconnected')
+						this.awaiting = false
+					}
+          else if( await userService.isConnected() )
+          {	//console.log(data)
+						//* on vérifie que notre user est "confirmed" :
+											
             // On émet un event custom pour indiquer aux parents 
             // que l'utilisateur s'est connecté avec succès
             // this.$emit( "user-connected" );
             // VueX : Plus besoin de s'embeter a faire remonter des events
             this.$store.commit( 'userConnected' );
+						this.awaiting = false
 						
 						//console.log("connecté");
             // Redirection vers la home
             this.$router.push( { name : 'list' } );
+						}
           }
-          else
-          {
-            // Token invalide, ou identifiants invalides
-            this.errors.loginFailed = true;
-						//console.log("ERREUR ! ! !")
-          }
+          
         }
       }
     }
-  }
+  
 </script>
 
 <style lang="scss" scoped>
@@ -199,7 +218,6 @@ label {
 	}
 
   button {
-    display: block;
     margin: 5px 0 2.3em 0;
     width: 100%;
     padding: 1em 1.5em;
@@ -218,6 +236,9 @@ label {
     }
 		&:disabled{
 			background: #bbb;
+		}
+		>div{
+			margin : auto
 		}
   }
 }

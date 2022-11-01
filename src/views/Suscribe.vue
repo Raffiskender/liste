@@ -1,5 +1,13 @@
 <template>
   <section>
+		<ModalView @close="toggleModal" :modalActive="modalActive">
+			<div class="modal-content">
+				<h1>Inscription réussie !</h1>
+				<p>Merci de vérifier votre adresse mail avant de vous connecter </p>
+			</div>
+		</ModalView>
+		<!-- <button @click="this.toggleModal">ouvrir</button> -->
+		
     <h2>S'enregistrer</h2>
     <form @submit.prevent="this.handleFormSubmit">
       <label>
@@ -166,8 +174,9 @@
         Identifiants incorrects
       </div>
 
-      <button :disabled="this.email == '' || this.username == '' || this.password == '' || this.passwordVerify == '' ">
-        S'inscrire
+      <button :disabled="this.email == '' || this.username == '' || this.password == '' || this.passwordVerify == '' || this.awaiting">
+        <span v-if="!this.awaiting">S'inscrire</span>
+				<SpinnerCpnt v-else />
       </button>
       <div class="error" v-if="this.errors.suscribeFailed">
 				<p>Il y eu un pb lors de votre enregistrement</p>
@@ -179,11 +188,15 @@
 				Vous pouvez dès à présent vous connecter sur la <router-link :to="{name : 'login'}" >page de connection</router-link> !
       </div>
     </form>
+
   </section>
 </template>
 
 <script>
   import userService from "@/Services/userService";
+	import ModalView from "@/components/Modal.vue";
+	import SpinnerCpnt from "@/components/SpinnerCpnt.vue";
+	import {ref} from 'vue'
   //import storage     from "@/utils/storage";
 	// import { useVuelidate } from '@vuelidate/core'
 	// import { required, email } from '@vuelidate/validators'
@@ -191,22 +204,33 @@
   export default 
   {
     name: "LoginView",
-		// setup () {
-		// 	return { v$: useVuelidate() }
-		// },
+		
+		components: {
+			ModalView,
+			SpinnerCpnt,
+		},
+		
+		setup(){
+			const modalActive = ref(false);
+			const toggleModal = () => {
+				modalActive.value = !modalActive.value;
+			}
+			return { modalActive, toggleModal }
+		},
 		
     data()
     {
       return {
 				email: "",
         username: "",
-        first_name: "",
-        last_name: "",
+        // first_name: "",
+        // last_name: "",
         password: "",
         passwordVerify: "",
 				passwordfocus: false,
 				seePwd:false,
 				seePwdVerif:false,
+				awaiting:false,
         errors : {
 					suscribeFailed: false,
           emailEmpty: false,
@@ -326,19 +350,27 @@
 						!this.errors.invalidPassword)
 				{
 
-					
+						this.awaiting = true;
 						// Envoie de la requette à l'endpoint users pour création du nouvel utilisateur
-						let data = await userService.suscribe( this.email, this.username, this.first_name, this.last_name, this.password );
+						let data = await userService.suscribe( this.email, this.username, this.password );
 						//console.log(this.email, this.username, this.first_name, this.last_name, this.password)
 						//console.log(data);
 						
 						if (data.success == 1){
 							this.success.suscribeSuccessfull = true;
+							this.email          = "";
+							this.username       = "" ;
+							this.password       = "" ;
+							this.passwordVerify = "";
+							this.toggleModal();
+							this.awaiting = false;
+
 						}
 					
 						else{
 							this.errorMessage = data.response.message;
 							this.errors.suscribeFailed = true;
+							this.awaiting = false;
 						}
 					}
 				}
@@ -418,6 +450,9 @@ form {
     }
 		&:disabled{
 			background: #bbb;
+		}
+		>div {
+			margin: auto;
 		}
   }
 	

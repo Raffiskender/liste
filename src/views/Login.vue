@@ -35,7 +35,9 @@
 					alt=""
 					width="16"/>
 
-				
+				<div>
+          <router-link :to="{name : 'passwordReset'}" >J'ai oublié mon mot de passe !</router-link>
+        </div>
 				<div class="error" v-if="this.errors.passwordEmpty">
           Vous devez saisir un mot de passe !
         </div>
@@ -47,19 +49,26 @@
       <div class="error" v-if="this.errors.unconfirmedUser" style="font-weight: bold; margin-bottom: 1em; text-align: center;">
 				Vous ne pouvez pas vous connecter car votre email n'a pas été vérifié !
       </div>
-
-      <button :disabled="this.login == '' || this.password == '' || this.awaiting">
+      <button @click="this.handleFormSubmit" :disabled="this.login == '' || this.password == '' || this.awaiting">
         <span v-if="!this.awaiting">Se connecter</span>
 				<SpinnerCpnt v-else/>
       </button>
     </form>
+    <div class="google">
+    
+    <p style = "margin-bottom: 1em;">Vous pouvez aussi vous connecter via</p>
+     <a href="https://accounts.google.com/o/oauth2/v2/auth?scope=email profile&access_type=online&redirect_uri=https://liste-v2.raffiskender.com/googleLogin&response_type=code&client_id=270319015769-o80is9ik9r6pop7fmojb46ns28pic1li.apps.googleusercontent.com">    <img src="@/../public/google.png" style = "width : 180px; height : auto">
+</a>
+</div>
   </section>
+	
 </template>
 
 <script>
-  import userService from "@/Services/userService";
-  import storage     from "@/utils/storage";
-	import SpinnerCpnt from "@/components/SpinnerCpnt.vue";
+  import { userService }  from "@/services/userService";
+  import { storage }      from "@/utils/storage";
+	import SpinnerCpnt      from "@/components/SpinnerCpnt.vue";
+  import { useUserStore } from "@/stores/User";
   export default
   {
     name: "LoginView",
@@ -67,14 +76,21 @@
 		components:{
 			SpinnerCpnt },
 		
-    data()
+    setup()
     {
+      const store = useUserStore();
+      return{
+        store,
+
+      }
+      },
+    data() {
       return {
         login: "",
         password: "",
 				seePwd:false,
 				awaiting:false,
-				
+        
         errors : {
           loginEmpty: false,
           passwordEmpty: false,
@@ -83,7 +99,6 @@
         }
       }
     },
-
     methods: 
     {
 			handleShowPwd(){
@@ -100,7 +115,6 @@
 			
       async handleFormSubmit()
       {
-
         // On retire l'erreur précédente
         this.errors.loginFailed = false;
 				this.errors.unconfirmedUser = false;
@@ -131,7 +145,7 @@
           // ON AWAIT LE RETOUR DE isConnected() pour la validation du token, sinon on reçoit une Promise et non un booléen !
           else if( data.user_confirmed[0] == ['0'] ){
 						this.errors.unconfirmedUser = true
-						this.$store.dispatch('userDisconnected')
+						//storeUser.userDisconnected();
 						this.awaiting = false
 					}
           else if( await userService.isConnected() )
@@ -142,15 +156,14 @@
             // que l'utilisateur s'est connecté avec succès
             // this.$emit( "user-connected" );
             // VueX : Plus besoin de s'embeter a faire remonter des events
-            this.$store.commit( 'userConnected' );
+            this.store.userConnection();
 						this.awaiting = false
 						
 						//console.log("connecté");
             // Redirection vers la home
             this.$router.push( { name : 'list' } );
 						}
-          }
-          
+          }    
         }
       }
     }
@@ -162,6 +175,12 @@
 /*This min-height section is to force mozilla android to keep the nav-bar.*/
 section{
 	min-height: calc(100vh + 0.05em);
+}
+div.google{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 h2 {

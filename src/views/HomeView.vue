@@ -1,46 +1,86 @@
 <template>
-	<section>
-		<div v-if="!this.$store.state.isConnected">
+  <section>
+		<div v-if="!isConnected">
 			<h3>Bienvenue sur la liste de course</h3>
 			<p class="title">Présentation</p>
 			<p>
-				Ce projet est en cours de développement, et bien qu'étant opérationnel, il n'est pas encore tout à fait aboutis. 
+				Ce projet est en cours de développement, et il commence à être assez aboutis.
 			</p>
 			<p>
-				Ceci est donc la version v0.1. Il s'agit du MVP (minimum viable product). Par minimum, j'entends la création de compte utilisateur (pas encore la suppression), la connexion au compte utilisateur, et la gestion <span style="text-decoration: underline;">d'une</span> liste de course.
+				Ceci est la version 2. Je me suis surtout attaché à avoir code propre, (dispo ici), et à avoir une gestion des utilisateurs assez fine (sécurisation du front-end sur les formulaires, réinitialisation de mot de passe, token à expiration, activation de compte etc).
 			</p>
 			<p class="title">Le projet (d'un mot)</p>
 			
-			<p>Il s'agit d'une liste de course. Le back-end est géré par WordPress (avec un plugin que j'ai programmé). J'ai aussi programmé le front avec Vue.js que j'affectionne pour sa simplicité, sa logique, sa légèreté et son adaptablilité et sa robustesse.
+			<p>Il s'agit d'une liste de course. Çà ne paye pas de mine, mais le back-end (WordPress) gère :
 			</p>
-			<p>
-			Je n'ai pas jugé utile de faire un versionning très poussé sur ce projet étant donné sa taille (c'est pas non plus gigantesque) et le fait que j'y travaille seul.</p>
+			<ul>
+        <li>La création des utilisateurs</li>
+        <li>L'activation du compte utilisateur</li>
+				<li>La réinitialisation du mot de passe utilisateur</li>
+				<li>la création d'une table aux données chiffrées pour la confidentialité de la liste de chaque utilisateur (avec une clé perso pour chacun)</li>
+				<li>La connexion avec Google OAuth</li>
+				<li>La gestion de la connexion est faite par JWT Authentication for wp Rest api</li>
+			</ul>
 			
+      <p>Le front est pour sa part programmé en Vue.js, framework que j'affetionne pour sa simplicité, sa logique, sa légèreté et son adaptablilité et sa robustesse. On y trouve :</p>
+      <ul>
+        <li>Deux stores pour la gestion de l'utilisateur et de sa liste</li>
+        <li>Un router</li>
+        <li>De la sécurisation de formulaires</li>
+        <li>Un tas de requêtes à l'api WordPress</li>
+        <li>Et aussi tout ce qui se voit dans le navigateur</li>
+      </ul>
 			<p class="title">Bientôt viendront : </p>
 			<ul>
-				<li>Un meilleur visuel (je vais demander de l'aide à Mme mon épouse)</li>
 				<li>La page profil utilisateur</li>
-				<li>Une connexion via Google</li>
-				<li>La création de rubriques pour gérer plusieurs listes</li>
-				<li>Le cryptage des informations dans la base de donnée (j'ai pas encore la solution mais j'y travaille).</li>
-			</ul>
+				<li>Des pages 403 et 404 un peu plus glamour</li>
+				<li>La persistance de la connexion via un cookie plutôt que par le localStorage</li>
+				<li>La création de rubriques pour gérer plusieurs listes <a @mouseover="this.handleDisplayFootnote($event)" @mouseleave="this.handleHideFootnote()" @touchstart="this.handleDisplayFootnote()" @scroll="this.handleHideFootnote()">*</a>
+          <p class="foot-note">Précision : Cette idée s'en va doucement aux oubliettes. En effet, je préfère privilégier la simplicité, plutôt que d'avoir plein de fonctionnalités pouvant géner des utilisateurs pas très à l'aise avec l'outil numérique.</p>
+        </li>
+        </ul>
 			<p class="title last" style="font-weight: bold;">
 				Pour commencer il faut <router-link :to="{name : 'login'}">vous connecter</router-link> ou  <router-link :to="{name : 'suscribe'}">créer un compte</router-link>.
 			</p>
 		</div>
-		<div v-if="this.$store.state.isConnected">
-			<h3>Bonjour {{this.getCurrentUsername()}}</h3>
+		<div v-if="isConnected">
+			<h3>Bonjour {{ getCurrentUsername() }} !</h3>
+      
 		</div>
 	</section>
 </template>
 
 <script>
-import storage   from '@/utils/storage'
+import { storage }      from '@/utils/storage';
+import { storeToRefs }  from 'pinia';
+import { useUserStore } from '@/stores/User';
 
 export default {
 	name: 'HomeView',
-
+  setup() {
+    const store = useUserStore();
+    const { isConnected } = storeToRefs(store);
+    return {
+      store,
+      isConnected
+    }
+  },
 	methods:{
+    handleDisplayFootnote(event) {
+      const p = document.querySelector('.foot-note')
+      p.style.opacity = 1
+      p.style['z-index'] = 3;
+      p.style.left = "calc((100vw / 2) - 10em)"
+      p.style.top = "calc(" + event.clientY + "px - 13em)"
+    },
+    
+    handleHideFootnote(){
+      const p = document.querySelector('.foot-note')
+      console.log(p);
+      p.style.opacity = 0;
+      p.style['z-index'] = -1;
+    },
+    
 		getCurrentUsername()
 			{
 				return storage.get( "userData" ).user_display_name;
@@ -53,6 +93,7 @@ section{
 	min-height: calc(100vh + 0.05em);
 }
 h3{
+  padding-top:1em;
 	text-align: center;
 	font-weight: bold;
 	font-size: 1.5em;
@@ -86,6 +127,34 @@ li{
 	padding:0 0.5em;
 	text-indent: -2em;
 }
+
+a {
+  cursor: pointer;
+} 
+
+p.foot-note {
+  //display: none;
+  //clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 30% 80%, 20% 100%, 10% 80%, 0 80%);
+  opacity:0;
+  z-index: -1;
+  height : 10em;
+  width : 15em;
+  position:fixed;
+  top : calc((100vw / 2) - 10em);
+  padding:14px 20px;
+  border-radius:4px;
+  box-shadow: 5px 5px 8px rgb(68, 68, 68);
+  border:1px solid #DCA;
+  background-color: #eaffe4;
+  transition: all 0.5s ease;
+  cursor:text;
+}
+
+a:hover + p.foot-note-hovered {
+   opacity: 1;
+   transition: all 0.5s ease;
+}
+
 a{
 	text-decoration: none;
 	color: blueviolet;
@@ -110,6 +179,7 @@ p.title{
 		padding-bottom: 2.5em;
 	}
 }
+
 
 
 </style>

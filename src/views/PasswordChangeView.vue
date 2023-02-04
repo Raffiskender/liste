@@ -1,46 +1,6 @@
 <template>
-  <section>
-		<ModalView @close="toggleModal" :modalActive="modalActive">
-			<div class="modal-content">
-				<h1 class="title">Inscription réussie !</h1>
-				<p>Merci de vérifier votre adresse mail avant de vous connecter </p>
-			</div>
-		</ModalView>
-		<!-- <button @click="this.toggleModal">ouvrir</button> -->
-		
-    <h2>S'enregistrer</h2>
+	<h1>Réinitialisation du mot de passe</h1>
     <form @submit.prevent="this.handleFormSubmit">
-      <label>
-        Email
-        <input
-					type="email"
-					name="Email"
-					v-model="this.email"
-					placeholder="Email"
-					:class="[isEmailValid()]"
-					required/>
-        <div class="error" v-if="this.errors.emailEmpty">
-          Vous devez saisir un mail !
-        </div>
-				<div class="error" v-if="this.errors.invalidMail">
-					E-mail invalide !
-				</div>
-      </label>
-			
-      <label>
-        Login
-        <input
-					type="text"
-					name="username"
-					v-model="this.username"
-					placeholder="username"
-					required/>
-					
-        <div class="error" v-if="this.errors.usernameEmpty">
-          Vous devez saisir un login !
-        </div>
-      </label>
-
       <label>
         Mot de passe
 				<input
@@ -132,7 +92,7 @@
         <div class="error" v-if="this.errors.passwordEmpty">
           Vous devez saisir un mot de passe !
         </div>
-        <div class="error" v-if="this.errors.invalidPassword">
+        <div class="error" v-if="this.errors.invalidPassword && !this.errors.passwordEmpty">
           Votre mot de passe n'est pas assez fort !
         </div>
       </label>
@@ -165,109 +125,68 @@
         <div class="error" v-if="this.errors.passwordVerifyEmpty">
           Vous devez saisir une deuxième fois votre mot de passe !
         </div>
-        <div class="error" v-if="this.errors.passwordsDoesNotMatch">
+        <div class="error" v-if="this.errors.passwordsDoesNotMatch && !this.errors.passwordVerifyEmpty">
           Les 2 mots de passe ne sont pas identiques !
         </div>
       </label>
-
-      <div class="error" v-if="this.errors.loginFailed">
-        Identifiants incorrects
-      </div>
-
-      <button :disabled="this.email == '' || this.username == '' || this.password == '' || this.passwordVerify == '' || this.awaiting">
-        <span v-if="!this.awaiting">S'inscrire</span>
-				<SpinnerCpnt v-else />
+      
+      <button :disabled="this.password == '' || this.isPasswordValid() == 'has-error' || this.isPasswordValidationOk() == 'has-error'">
+        <span v-if="!this.awaiting">Réinitialiser</span>
+        <SpinnerCpnt v-else />
       </button>
-      <div class="error" v-if="this.errors.suscribeFailed">
-				<p>Il y eu un pb lors de votre enregistrement</p>
-				<p>Message : {{this.errorMessage}}</p>
-				
+      <div class="error" v-if="this.errors.sendingFailed">
+        <p>Il y eu un pb</p>
+        <p>Message : {{this.errorMessage}}</p>		
       </div>
-      <div class="success" v-if="this.success.suscribeSuccessfull" style="font-weight: bold; margin-bottom: 1em; text-align: center;">
-				Félicitation, vous êtes à présent enregistré sur notre site.
-				Vous pouvez dès à présent vous connecter sur la <router-link :to="{name : 'login'}" >page de connection</router-link> !
+      <div class="success" v-if="this.success" style="font-weight: bold; margin-bottom: 1em; text-align: center;">
+        Votre mot de passe vient d'être remplacé. Vous pouvez aller <router-link :to="{name : 'login'}" >vous connecter</router-link> !
       </div>
     </form>
-
-  </section>
 </template>
 
 <script>
-  import {userService} from "@/services/userService";
-	import ModalView from "@/components/Modal.vue";
-	import SpinnerCpnt from "@/components/SpinnerCpnt.vue";
-	import {ref} from 'vue'
-  //import storage     from "@/utils/storage";
-	// import { useVuelidate } from '@vuelidate/core'
-	// import { required, email } from '@vuelidate/validators'
-	
-  export default 
-  {
-    name: "LoginView",
-		
-		components: {
-			ModalView,
-			SpinnerCpnt,
-		},
-		
-		setup(){
-			const modalActive = ref(false);
-			const toggleModal = () => {
-				modalActive.value = !modalActive.value;
-			}
-			return { modalActive, toggleModal }
-		},
-		
-    data()
-    {
-      return {
-				email: "",
-        username: "",
-        // first_name: "",
-        // last_name: "",
-        password: "",
-        passwordVerify: "",
-				passwordfocus: false,
-				seePwd:false,
-				seePwdVerif:false,
-				awaiting:false,
-        errors : {
-					suscribeFailed: false,
-          emailEmpty: false,
-          usernameEmpty: false,
-          fisrt_nameEmpty: false,
-          last_nameEmpty: false,
-          passwordEmpty: false,
-          passwordVerifyEmpty: false,
-					passwordsDoesNotMatch: false,
-					invalidMail: false,
-					invalidPassword: false,
-				},
-        success : {
-					suscribeSuccessfull: false,
-        },
-				errorMessage:'',
-				regMail:/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-				regPassword : /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(^.{8,22}$)/,
-				regNumberOfCaracteres:/(^.{8,22}$)/,
-				regSpecialCaractere:/(?=.*[^A-Za-z0-9])/,
-				regCapitilizeCaractere: /(?=.*[A-Z])/,
-				regMinimizeCaractere:/(?=.*[a-z])/,
-				regNumber: /(?=.*[0-9])/,
-			}
-		},
-		// validations () {
-		// 	return{
-		// 		email: { required, email}
-		// 	}
-		// },
+import { userService } from '@/services/userService';
+//import LoadingVue from '@/components/Layout/Loading.vue';
+import SpinnerCpnt from '@/components/SpinnerCpnt.vue';
 
-		methods: 
-		{
-			isEmailValid() {
-				return (this.email == "") ? "" : (this.regMail.test(this.email)) ? 'has-success' : 'has-error';
+export default {
+	name : 'PasswordChange',
+	components : {
+    SpinnerCpnt,
+  },
+  
+	data(){
+		return{
+      seePwd:false,
+      seePwdVerif: false,
+      password: "",
+      passwordVerify:'',
+      regPassword : /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(^.{8,22}$)/,
+			regNumberOfCaracteres:/(^.{8,22}$)/,
+			regSpecialCaractere:/(?=.*[^A-Za-z0-9])/,
+			regCapitilizeCaractere: /(?=.*[A-Z])/,
+			regMinimizeCaractere:/(?=.*[a-z])/,
+			regNumber: /(?=.*[0-9])/,
+      
+      errors : {
+        passwordEmpty: false,
+        passwordVerifyEmpty: false, 
+        invalidPassword:false,
+        sendingFailed:false,
+        passwordsDoesNotMatch:false,
 			},
-			handleSeePwd(){
+      awaiting:false,
+      errorMessage:'',
+      success:false,
+      
+      userId :this.$route.query['user'],
+			userKey :this.$route.query['key'],
+      
+		}
+	},
+		
+	methods:{
+      handleSeePwd(){
 				this.seePwd = !this.seePwd;
 				this.passwordfocus = true;
 			},
@@ -325,58 +244,43 @@
 				this.seePwd = false;
 				this.passwordfocus = false;
 			},
-			
-			async handleFormSubmit()
-			{
-				this.errors.suscribeFailed = false;
-				this.errors.invalidMail = false;
-				this.errors.invalidPassword = false;
-				
-				// --- Vérification des données du formulaire --- //
-				// En version raccourcie : on stocke le résultat de la condition dans la variable
-				this.errors.emailEmpty     = ( this.email    == "" );
-				this.errors.usernameEmpty  = ( this.username == "" );
-				this.errors.passwordEmpty  = ( this.password == "" );
-				this.errors.passwordsDoesNotMatch = ( this.password != this.passwordVerify )
-				this.errors.invalidMail = ( !this.regMail.test(this.email) );
-				this.errors.invalidPassword = ( !this.regPassword.test(this.password) );
-							
-				// Si une erreur est rencontrée, on n'envoi pas la requete au serveur !
-				if( !this.errors.usernameEmpty &&
-						!this.errors.passwordEmpty &&
-						!this.emailEmpty &&
-						!this.errors.passwordsDoesNotMatch &&
-						!this.errors.invalidMail &&
-						!this.errors.invalidPassword)
-				{
-
-						this.awaiting = true;
-						// Envoie de la requette à l'endpoint users pour création du nouvel utilisateur
-						let data = await userService.suscribe( this.email, this.username, this.password );
-						//console.log(this.email, this.username, this.first_name, this.last_name, this.password)
-						//console.log(data);
-						
-						if (data.success == 1){
-							this.success.suscribeSuccessfull = true;
-							this.email          = "";
-							this.username       = "" ;
-							this.password       = "" ;
-							this.passwordVerify = "";
-							this.toggleModal();
-							this.awaiting = false;
-
-						}
-					
-						else{
-							this.errorMessage = data.response.message;
-							this.errors.suscribeFailed = true;
-							this.awaiting = false;
-						}
-					}
-				}
-			
-		}
+  
+    async handleFormSubmit() {
+      //* Errors reinitialisation...
+      this.errors.passwordEmpty = false;
+      this.errors.passwordVerifyEmpty = false;
+      this.errors.invalidPassword = false;
+      this.sendingFailed = false;
+      this.errorMessage = '';
+      this.success = false;
+      
+      //* Now come the verifications 
+      this.errors.passwordEmpty = (this.password == '')
+      this.errors.passwordVerifyEmpty = (this.passwordVerify == '')
+      this.errors.invalidPassword = ( !this.regPassword.test(this.password) );
+      this.errors.passwordsDoesNotMatch = (this.password != this.passwordVerify)
+      
+      if (!this.errors.passwordEmpty && !this.errors.passwordVerifyEmpty && !this.errors.invalidPassword){
+        const response = await userService.passwordReset(this.password, this.userKey, this.userId);
+        //* If we have a message, it means we have an error...
+        
+        if (response.success == 1){
+          this.success = true;
+          this.email   = "";
+          this.awaiting = false;
+          this.errors.sendingFailed = false;
+        }
+        else {
+          this.errorMessage = response.response;
+          this.errors.sendingFailed = true;
+          this.awaiting = false;
+          this.success = false;
+        }
+      }
+    }
 	}
+}
+
 </script>
 
 <style lang="scss" scoped>

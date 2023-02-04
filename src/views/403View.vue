@@ -1,12 +1,13 @@
 <template>
 
-<img src="" alt="">
+<p>403 !</p>
 
 </template>
 
 <script>
 export default{
-	
+  name: '403View',
+
 }
 </script>
 

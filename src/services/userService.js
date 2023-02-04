@@ -1,13 +1,14 @@
-import axios   from "axios";
-import storage from "@/utils/storage";
+import axios from "axios";
+import { storage } from "@/utils/storage";
 
-const userService = 
+export const userService = 
 {
   // Propriété qui stocke la BASE URL de notre API
-	//base_url : "http://localhost/Projets_Vue/ListeDeCouseBackend/wordpress/wp-json/",
-	base_url : "https://listeback.raffiskender.com/wp-json/",
+	//base_url : "http://192.168.42.124/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
+	base_url : "https://listeback-v2.raffiskender.com/wp-json/",
 
 	success : '',
+
 
   // Méthode pour se connecter
   async login( p_login, p_password )
@@ -17,7 +18,7 @@ const userService =
       password: p_password
     }).catch( function() {
       return { data : null };
-    } );
+    });
     return response.data;
   },
 	
@@ -26,7 +27,6 @@ const userService =
   {
     // Vérification de la validité du token JWT stocké dans le localStorage
     const userData = storage.get( "userData" );
-
     // On vérifie d'abord qu'on a récupéré quelque chose
     if( userData != null )
     {
@@ -47,7 +47,7 @@ const userService =
           // Token invalide, on renvoi false
           return false;
         } );
-
+        
         // Si on arrive jusqu'ici c'est que tout est bon, le token est valide. On va tout de suite vérifier que notre user est bien "confirmed". on est connecté
         // console.log( response );
         return true;
@@ -60,12 +60,11 @@ const userService =
 	async suscribe(eMail, login, password) {
 		this.success = 1;
 		const response = await axios.post( 
-			this.base_url + "wp/v2/users",
+			this.base_url + "liste-de-course/v1/create-user",
 			{
 				username   :login,
 				email      :eMail,
 				password   :password,
-				roles      :['author'],
 			}).catch( function(response) {
 				// Ici, j'indique a JS quoi faire si la requete échoue (erreur réseau, etc)
 					//console.log(response.response.data.message);
@@ -98,8 +97,61 @@ const userService =
 					return { data : null };
 			});
     return response.data;
-	}
-	
-};
+	},
+  
+	async userAsksForPasswordReset(email){
+    this.success = 1;
+    const response = await axios.post(
+      this.base_url + 'liste-de-course/v1/askForPasswordReset', {
+        email : email,			
+        }).catch( function(response) {
+          // Ici, j'indique a JS quoi faire si la requete échoue (erreur réseau, etc)
+          //console.log(response.response.data.message);
+            userService.success = 0;
+            return response
+          }
+        );
+      if (this.success == 1){
+        return {
+          'success': 1,
+          'response': response.data,
+        }
+      }
+      else {
+        return {
+        'success': 0,
+        'response': response.response.data,
+        }
+      }
+    },
+  async passwordReset(password, key, userId){
+    this.success = 1;
+		const response = await axios.post( 
+			this.base_url + "liste-de-course/v1/resetPassword",
+			{
+				password :password,
+				userId   :userId,
+        key      :key,
+			}).catch( function(response) {
+				// Ici, j'indique a JS quoi faire si la requete échoue (erreur réseau, etc)
+					//console.log(response.response.data.message);
+					userService.success = 0;
+					return response
+				}
+			);
+		if (this.success == 1){
+      if (response.data == '1'){
+        return {
+          'success': 1,
+        }
+      }
+        else {
+          return {
+          'success': 0,
+          'response': response.data,
+        }
+      }
+		}
+	},
 
-export default userService;
+};

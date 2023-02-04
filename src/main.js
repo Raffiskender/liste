@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import { createPinia } from 'pinia'
 
 // Vue sanitize
 import Vue3Sanitize from "vue-3-sanitize";
@@ -21,6 +21,11 @@ import { faCircleCheck, faCircleXmark } from '@fortawesome/free-regular-svg-icon
 
 library.add(faEye, faEyeSlash, faCircleCheck, faCircleXmark)
 
+const pinia = createPinia()
 
 createApp(App)
-.use(store).use(router).use(Vue3Sanitize,defaults).component('font-awesome-icon', FontAwesomeIcon).mount('#app')
+.use(pinia)
+.use(router)
+.use(Vue3Sanitize,defaults)
+.component('font-awesome-icon', FontAwesomeIcon)
+.mount('#app')

@@ -1,19 +1,19 @@
-import axios   from "axios";
-import storage from "@/utils/storage";
+import axios from "axios";
+import { storage } from "@/utils/storage";
 
-const listService =
+export const listService =
 {
   // Propriété qui stocke la BASE URL de notre API
-	//base_url : "http://localhost/Projets_Vue/ListeDeCouseBackend/wordpress/wp-json/",
-	base_url : "https://listeback.raffiskender.com/wp-json/",
+	//base_url : "http://192.168.42.124/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
+	base_url : "https://listeback-v2.raffiskender.com/wp-json/",
 
   // Méthode pour se connecter
   async findAll()
 	{
 		const userData = storage.get( "userData" );
-
+		//http://localhost/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/liste-de-course/v1/data
     const response = await axios.get(
-			this.base_url + "wp/v2/list_element?author=" + userData.user_id + "&status=private&_embed=true&per_page=100",
+			this.base_url + "liste-de-course/v1/data/" + userData.user_id,
 			{
 				headers:{
 						Authorization : "Bearer " + userData.token
@@ -22,19 +22,18 @@ const listService =
     ).catch( function() {
       return { data : null };
     } );
+  
     return response.data;
   },
 
-  async create(newElement)
+  async update(newJsonTable)
 	{
 		const userData = storage.get( "userData" );
 
-    const response = await axios.post(
-			this.base_url + "wp/v2/list_element",
+    const response = await axios.put(
+			this.base_url + "liste-de-course/v1/data/" + userData.user_id,
 			{
-        title: newElement,
-        status: "private",
-        classement: '',
+        json: newJsonTable,
 			},
 			{
 				headers:{
@@ -86,5 +85,3 @@ const listService =
     return true;
   }
 };
-
-export default listService;

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import userService from '@/Services/userService';
+import { userService } from '@/services/userService';
 import LoadingVue from '@/components/Layout/Loading.vue';
 
 export default {
@@ -39,7 +39,7 @@ export default {
 			if(user && key){
 				let data = await userService.userConfirmation( user, key );
 				
-				if(data == 1) {
+				if(data == 2) {
 					this.success = true;
 				}
 				else{

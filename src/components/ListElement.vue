@@ -1,58 +1,80 @@
 <template>
 	<div class="container">
-		<p 
-			
-			class="title"
-			@click="handleSwitchToEditMode"
-			v-bind:class = "{hide: this.editMode}"
-			v-html=this.cleanMessage(this.initialTitle)>
-			
-		</p>
-		<form @submit.prevent="handleSave({id})">
-			<input
-				ref="myInput"
-				v-bind:class = "{hide: !this.editMode}"
-				type="text"
-				v-model="this.newTitle"
-				@blur="handleSave({id})"
-			>
-		</form>
-			
-		<!-- <p class="rubrique">{{rubrique}}</p>
-		<p class="urgence">{{urgence}}</p> -->
-		<div>
-		<button
-			class = "delete"
-			v-bind:class = "{hide: this.editMode}"
-			@click="handleDelete({id})" >X</button>
-		<button
-			v-bind:class = "{hide: !this.editMode}"
-			@click="handleSave({id})">Enregistrer</button>
-		<button
-			v-bind:class = "{hide: !this.editMode}"
-			@click="handleCancelModify">Annuler</button>
-		</div>
-	</div>
+    
+    <form
+    @submit.prevent="handleSave(id)"
+    >
+    <div
+      class="input"
+      v-bind:class = "{hide: !this.editMode}"
+      >
+      
+      <input
+        ref="myInput"
+        type="text"
+        :id = id
+        v-model="this.newTitle"
+        @blur="this.handleSave($event, id)"
+      >
+      <div>
+        <button
+        @mousedown="handleSave($event, id)"
+        style = "margin-right:1em">
+        Enregistrer
+      </button>
+      <button
+      @mousedown="handleCancelModify($event, id)"
+      >
+      Annuler
+    </button>
+    </div>
+  </div>
+  <div class="text"
+  v-bind:class = "{hide: this.editMode}"
+>
+      <p 
+        class="title"
+        :id = "'p' + id"
+        @mousedown="handleSwitchToEditMode(id)"
+        v-html=this.title>
+      </p>
+        <button
+          class = "delete"
+          @click="handleOnDelete(id)" >
+          X
+        </button>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
-import listService from '@/Services/listService';
+import { storeToRefs } from 'pinia'
+import { useListStore } from '@/stores/List'
 
 export default 
 {
   props: 
   {
     title: String,
-		rubrique: String,
-		urgence: String,
 		id:Number,
   },
-	
+  
+  setup() {
+    const listStore = useListStore();
+    const { listData } = storeToRefs(listStore);
+    return{
+      listStore,
+      listData,
+    }
+  },
+  
 	data() {
 		return {
 			editMode: false,
 			initialTitle: this.title,
-			newTitle: this.cleanMessage(this.title)
+			newTitle: this.title,
+      preventBlur: false,
 		}
 	},
 	
@@ -60,47 +82,50 @@ export default
 		cleanMessage(message) {
       return this.$sanitize(message);
     },
-		async handleDelete(number){
-
-			await listService.delete(number.id)
-									
-			this.$emit('element-deleted', number.id)
-			// 	return true;
-			// }else{
-			// 	console.log('ERREUR INTERNE BLA BLA BLA')
-			// 	return false;
-			//}
-		
+    
+		handleOnDelete(id){
+      this.listStore.delete(id)
 		},
 	
-		handleSwitchToEditMode(){
+		handleSwitchToEditMode(id){
 			this.editMode = true;
-			this.$nextTick(() => {
-				this.$refs.myInput.focus()
-			});
+      this.preventBlur = false;
+      setTimeout(function(){ document.getElementById(id).focus();})
 		},
 		
-		BackToDisplayMode(){
+		backToDisplayMode(){
 			this.editMode = false;
 		},
-		
-		
-		handleCancelModify(){
+    
+		handleOnBlur(){
+      if (!this.preventBlur)
+        console.log('blur fired');
+      else console.log('blur unactive');
+    },
+    
+		handleCancelModify(event, id){
+      event.preventDefault();
+      document.getElementById('p' + id).focus();
+      this.preventBlur = true;
 			this.newTitle = this.initialTitle
-			this.BackToDisplayMode();
-		},
-		
-		async handleSave(number){
-			
-			if(this.initialTitle !== this.newTitle){
-				await listService.patch(number.id, this.newTitle);
-				this.initialTitle = this.newTitle;
-			}
-			if(this.newTitle === ''){
-				this.handleDelete(number)
-			}
 
-			this.BackToDisplayMode();
+		},
+		handleReactivateBlur(){
+    },
+    
+		async handleSave(event, id){
+      if ((event.type == 'blur' && !this.preventBlur) || event.type=='mousedown'){
+        event.preventDefault();
+        
+        if(this.initialTitle !== this.newTitle && this.newTitle !== this.initialTitle ){
+          this.listStore.update(id, this.newTitle);
+          this.initialTitle = this.newTitle;
+        }
+        if(this.newTitle === ''){
+          this.handleOnDelete(id)
+        }
+      }
+			this.backToDisplayMode();
 		}
 		
 	}
@@ -108,42 +133,49 @@ export default
 </script>
 
 <style lang="scss" scoped>
-div.container{
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	align-items: center;
+.container{
 	margin: 0 0.5em;
 }
 
-.hide{
-	display:none;
+form{
+  width : 100%;
+}
+
+.text{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items:center; 
+}
+
+input{
+  box-sizing: border-box;
+  padding: 0.5em;
+  width : 100%;
+  margin-bottom: 0.5em;
+  border:none;
+}
+.input {
+  margin: auto;
 }
 
 p{
-	width: calc(100% / 3);
+	width: calc(100% - 6em);
 	font-size:1.2em;
 	font-family:'Quicksand', Arial, Helvetica, sans-serif ;
 	color:rgb(0, 89, 255);
-	margin: 0 0 0.5em 0;
+  margin : 00.5em 0em;
 	&:hover
 	{
 		cursor:pointer;
 	}
 }
 
-// .rubrique{
-// 	text-align: center;
-// }
-// .urgence{
-// 	text-align: right;
-// }
-
 button{
-
-	font-family: 'Quicksand',  Arial, Helvetica, sans-serif;
-	margin-left:0.2em;
-	margin-top:0.3em;
+  
+  font-family: 'Quicksand',  Arial, Helvetica, sans-serif;
+	margin-left:0em;
+	margin-top:0em;
 	padding: 0.2em 0em;
 	background: rgb(216, 226, 253);
 	color: rgb(0, 11, 163);
@@ -164,4 +196,7 @@ button{
 			color: rgb(163, 0, 0);
 		}
 }
+  .hide{
+    display:none;
+  }
 </style>

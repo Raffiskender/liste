@@ -32,18 +32,15 @@ export default {
 <style lang="scss" scoped>
 /*Modale annimation*/
 .modale{
-	background: rgb(170, 170, 170);
+	background: rgb(202, 202, 202);
 	width: 100%;
 	max-width: 450px;
 	height: 100vh;
 	position: fixed;
-	//@at-rootopacity: 1;
 	z-index: 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	//transition: opacity 2s ease;
-	//filter:blur(20px);
 }
 .modal-animation-enter-from,
 .modal-animation-leave-to{
@@ -70,19 +67,23 @@ export default {
 
 .modal-inner{
 	height: auto;
-	width: 300px;
-	background: rgb(255, 213, 213);
+	width: 80%;
+	max-width: 680px;
+	
+	background:lighten(rgb(0, 255, 0), 45%);
+	
 	border-radius: 1em;
 	padding: 1em;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 	>.close-btn{
-		position:relative;
-		top:00px;
-		left: 280px;
+		align-self: flex-end;
 		width: 1.5em;
 		height: 1.5em;
-		color:crimson;
+		color:blueviolet;
 		&:hover{
-			color:rgb(243, 137, 158);
+			color:lighten( blueviolet, 15%);
 			cursor:pointer;
 		}
 }
@@ -90,7 +91,8 @@ export default {
 		margin: 0.5em auto;
 		display: block;
 		padding: 0.5em 1em;
-		background: #777;
+		background: blueviolet;
+		border-radius: 0.3em;
 		border:none;
 		color : rgb(255, 255, 255);
 		transition: 0.2s ease;
@@ -102,10 +104,12 @@ export default {
 			}
 		}
 		&:hover{
-			background:rgb(177, 177, 177);
+			background: lighten(blueviolet, 15%);
 			cursor:pointer;
 		}
 	}
+	
+
 }
 
 

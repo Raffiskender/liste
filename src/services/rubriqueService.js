@@ -5,7 +5,7 @@ const rubriqueService =
 {
   // Propriété qui stocke la BASE URL de notre API
 	//base_url : "http://localhost/Projets_Vue/ListeDeCouseBackend/wordpress/wp-json/",
-	base_url : "https://listeback.raffiskender.com/wp-json/",
+	base_url : "https://listeback-v2.raffiskender.com/wp-json/",
 
   // Méthode pour se connecter
   async findAll()

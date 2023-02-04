@@ -1,36 +1,60 @@
 <template>
-		<nav>
+  <nav>
 			<ul>
-				<li v-if="!this.$store.state.isConnected">
-					<router-link :to="{name : 'login'}" >
+        <router-link
+          :to="{name : 'home'}" 
+          class="li"
+          v-if="!isConnected">
+        Accueil
+				</router-link>
+        <router-link
+          :to="{name : 'login'}" 
+          v-if="!isConnected"
+          class="li">
 					Connection
-					</router-link>
-				</li>
-				<li v-if="!this.$store.state.isConnected">
-					<router-link :to="{name : 'suscribe'}" >
+				</router-link>
+				
+        <router-link :to="{name : 'suscribe'}" 
+          v-if="!isConnected"
+          class="li">
 					Inscription
-					</router-link>
-				</li>
-				<li v-if="this.$store.state.isConnected" @click="this.$store.dispatch('userDisconnected')">
-					<router-link :to="{name : 'home'}">
-						<span>Déconnexion</span>
-					</router-link>  
-				</li>
-				<li v-if="this.$store.state.isConnected">
-					<router-link :to="{name : 'list'}" >
-						Liste
-						</router-link>
-				</li>
-				<li v-if="this.$store.state.isConnected">
-					Profil
-				</li>
-			</ul>
-		</nav>
+				</router-link>
+				
+        <router-link :to="{name : 'home'}"
+        class="li"
+        v-if="isConnected"
+        @click="this.store.userDisconnection()">
+        <span>Déconnexion</span>
+      </router-link>  
+      
+      <router-link :to="{name : 'list'}" 
+      v-if="isConnected"
+      class="li">
+      Liste
+    </router-link>
+    <router-link :to="{name : 'profil'}" 
+      v-if="isConnected"
+      class="li">
+      Profil
+    </router-link>
+</ul>
+</nav>
 </template>
 
 <script>
+import { storeToRefs } from 'pinia';
+import { useUserStore } from '@/stores/User';
 export default {
-	name: 'NavCpnt'
+  name: 'NavCpnt',
+  
+  setup() {
+    const store = useUserStore();
+    const { isConnected } = storeToRefs(store)
+    return{
+      store,
+      isConnected,
+    }
+  }
 }
 </script>
 
@@ -69,7 +93,7 @@ a{
 	color :rgb(0, 0, 0);
 	text-decoration: none
 }
-li{
+.li{
 	font-family: 'Quicksand',  Arial, Helvetica, sans-serif;
 	margin:0;
 	padding: 0.5em 1em;
@@ -89,5 +113,7 @@ li{
 span{
 			color: rgb(180, 0, 0);
 		}
-
+.router-link-active{
+  display:none;
+}
 </style>

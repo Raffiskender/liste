@@ -1,7 +1,7 @@
 // Module qui permet de faciliter la gestion du localStorage 
 // et la traduction en JSON des valeurs stockées
 
-const storage = 
+export const storage = 
 {
   // Enregistrer une valeur en JSON
   set : function( key, value )
@@ -23,5 +23,3 @@ const storage =
     window.localStorage.removeItem( key );
   }
 };
-
-export default storage;

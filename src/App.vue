@@ -1,5 +1,4 @@
 <template>
-	<HeaderView/>
 	<router-view v-slot="{ Component }">
 		<component :is="Component" />
 	</router-view>
@@ -7,26 +6,28 @@
 </template>
 
 <script>
-//import HomeView from '@/views/HomeView.vue'
-//import HeaderView from './components/Layout/Header.vue';
 import NavCpnt from '@/components/Layout/NavComponent.vue'
-// import HeaderView from '@/components/Layout/HeaderView.vue';
-import userService from '@/Services/userService';
+import {useUserStore} from '@/stores/User'
+import {userService} from '@/services/userService';
 
-export default {
+export default{
   name: 'App',
+  
   components: {
-    //HomeView,
-    //HeaderView,
     NavCpnt,
-    // HeaderView
-	},
-	
-		async created()
-  {
-		this.$store.commit( "setConnected", await userService.isConnected() );
   },
-}
+  
+  setup() {
+    const userStore = useUserStore();
+    return {
+      userStore,
+    }
+  },
+  async created(){
+    this.userStore.setConnected( await userService.isConnected() )
+  }
+  }
+
 </script>
 
 <style lang="scss">
@@ -44,7 +45,7 @@ html{
 
 body{
 	padding: 0;
-	min-height: 100vh;
+	min-height: calc(100vh + 0.05em);
 	width: 100%;
 	max-width: 450px;
 	background-color: rgb(236, 236, 236);
@@ -57,5 +58,10 @@ body{
 h1, h2, h3, p, ul, li{
 	font-family: 'quicksand', Arial, Helvetica, sans-serif;
 }
+
+	h1{
+		color: blueviolet;
+		text-align: center;
+	}
 
 </style>

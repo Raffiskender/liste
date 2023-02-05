@@ -58,20 +58,7 @@
       
       <a href="https://accounts.google.com/o/oauth2/v2/auth?scope=email profile&access_type=online&redirect_uri=https://liste-v2.raffiskender.com/googleLogin&response_type=code&client_id=270319015769-o80is9ik9r6pop7fmojb46ns28pic1li.apps.googleusercontent.com"><img src="@/../public/google.png" style = "width : 180px; height : auto">
       </a>
-      <div id="g_id_onload"
-          data-client_id="270319015769-o80is9ik9r6pop7fmojb46ns28pic1li.apps.googleusercontent.com"
-          data-login_uri="https://liste-v2.raffiskender.com/googleLogin"
-          data-auto_prompt="false">
-      </div>
-      <div class="g_id_signin"
-          data-type="standard"
-          data-size="large"
-          data-theme="outline"
-          data-text="sign_in_with"
-          data-shape="rectangular"
-          data-logo_alignment="left">
-      </div>
-      <GoogleLogin :callback="callback"/>
+ 
     </div>
 
   </section>
@@ -93,11 +80,6 @@
 		
     setup()
     {
-      const callback = (response) => {
-        // This callback will be triggered when the user selects or login to
-        // his Google account from the popup
-        console.log("Handle the response", response)
-}
       const store = useUserStore();
       return{
         store,

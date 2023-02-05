@@ -83,8 +83,6 @@
       const store = useUserStore();
       return{
         store,
-        callback,
-
       }
     },
     

@@ -22,7 +22,6 @@ export default{
   async created()
   {
     let code  = this.$route.query['code'];
-    console.log(code);
     
     let data = await googleService.login(code);
     

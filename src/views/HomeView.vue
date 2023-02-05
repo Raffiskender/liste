@@ -7,7 +7,7 @@
 				Ce projet est en cours de développement, et il commence à être assez aboutis.
 			</p>
 			<p>
-				Ceci est la version 2. Je me suis surtout attaché à avoir code propre, (dispo ici), et à avoir une gestion des utilisateurs assez fine (sécurisation du front-end sur les formulaires, réinitialisation de mot de passe, token à expiration, activation de compte etc).
+				Ceci est la version 2. Je me suis surtout attaché à avoir code propre, <a href = "https://github.com/Raffiskender" target="blank">(dispo ici)</a>, et à avoir une gestion des utilisateurs assez fine (sécurisation du front-end sur les formulaires, réinitialisation de mot de passe, token à expiration, activation de compte etc).
 			</p>
 			<p class="title">Le projet (d'un mot)</p>
 			

@@ -2,7 +2,7 @@
 	<div class="container">
     
     <form
-    @submit.prevent="handleSave(id)"
+    @submit="handleSave($event, id)"
     >
     <div
       class="input"
@@ -114,12 +114,12 @@ export default
     },
     
 		async handleSave(event, id){
-      if ((event.type == 'blur' && !this.preventBlur) || event.type=='mousedown'){
+      if ((event.type == 'blur' && !this.preventBlur) || event.type=='mousedown' || event.type == 'submit'){
         event.preventDefault();
         
         if(this.initialTitle !== this.newTitle && this.newTitle !== this.initialTitle ){
-          this.listStore.update(id, this.newTitle);
           this.initialTitle = this.newTitle;
+          this.listStore.update(id, this.newTitle);
         }
         if(this.newTitle === ''){
           this.handleOnDelete(id)

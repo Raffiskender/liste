@@ -32,14 +32,28 @@ export const useListStore = defineStore('list', {
       await listService.update(JSON.stringify(this.listData)) 
     },
     
-    async update(id, newTitle){
-    for (const current in this.listData){
-      if (this.listData[current].id === id){
-        this.listData[current].content = newTitle
+    async updateTitle(id, newTitle){
+      
+      for (const current in this.listData){
+        if (this.listData[current].id === id){
+          this.listData[current].content = newTitle
+          
+        }
       }
-    }
+      
+      await listService.update(JSON.stringify(this.listData)) 
+    }, 
     
-    await listService.update(JSON.stringify(this.listData)) 
+    async updateDone(id, done){
+      
+      for (const current in this.listData){
+        if (this.listData[current].id === id){
+          this.listData[current].done = done
+          
+        }
+      }
+      
+      await listService.update(JSON.stringify(this.listData)) 
     }
       
       

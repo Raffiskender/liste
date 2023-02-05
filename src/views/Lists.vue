@@ -54,11 +54,12 @@
             v-bind:key="listElement.id"
             :title="listElement.content"
             :id="listElement.id"
+            :done="listElement.done"
           />
       </div>
       </div>
 			<div class="add-form">
-				<form @submit.prevent="this.handleFormSubmit" >
+				<form @submit.prevent="this.handleFormSubmit()" >
 					<label for="element"></label>
 					<input type="text" id="element" v-model="this.newElement" placeholder="Nouvelle ligne" @focus="this.engouthCaracteres = true">
 					<button class="button" :disabled="this.disableButton" v-bind:class="{'hide': this.disableButton}">{{this.buttonContent}}</button>
@@ -137,7 +138,8 @@ export default{
         this.buttonContent = ''
         this.newElement = {
           id : Date.now(),
-          content : this.newElement
+          content : this.newElement,
+          done : false
         }
         
         //*envoie de la requête à la base de donnée via un await 

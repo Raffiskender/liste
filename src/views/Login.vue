@@ -23,7 +23,6 @@
 					icon="fa-solid fa-eye"
 					@click="this.handleShowPwd()"
 					v-bind:class="{'hide': this.seePwd}"
-					src="@/assets/eye-solid.svg"
 					alt=""
 					width="16" /> 
 				<font-awesome-icon
@@ -31,7 +30,6 @@
 					icon="fa-solid fa-eye-slash"
 					@click="this.handleHidePwd()"
 					v-bind:class="{'hide': !this.seePwd}"
-					src="@/assets/eye-slash-solid.svg"
 					alt=""
 					width="16"/>
 
@@ -56,10 +54,26 @@
     </form>
     <div class="google">
     
-    <p style = "margin-bottom: 1em;">Vous pouvez aussi vous connecter via</p>
-     <a href="https://accounts.google.com/o/oauth2/v2/auth?scope=email profile&access_type=online&redirect_uri=https://liste-v2.raffiskender.com/googleLogin&response_type=code&client_id=270319015769-o80is9ik9r6pop7fmojb46ns28pic1li.apps.googleusercontent.com">    <img src="@/../public/google.png" style = "width : 180px; height : auto">
-</a>
-</div>
+      <p style = "margin-bottom: 1em;">Vous pouvez aussi vous connecter via</p>
+      
+      <a href="https://accounts.google.com/o/oauth2/v2/auth?scope=email profile&access_type=online&redirect_uri=https://liste-v2.raffiskender.com/googleLogin&response_type=code&client_id=270319015769-o80is9ik9r6pop7fmojb46ns28pic1li.apps.googleusercontent.com"><img src="@/../public/google.png" style = "width : 180px; height : auto">
+      </a>
+      <div id="g_id_onload"
+          data-client_id="270319015769-o80is9ik9r6pop7fmojb46ns28pic1li.apps.googleusercontent.com"
+          data-login_uri="https://liste-v2.raffiskender.com/googleLogin"
+          data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+          data-type="standard"
+          data-size="large"
+          data-theme="outline"
+          data-text="sign_in_with"
+          data-shape="rectangular"
+          data-logo_alignment="left">
+      </div>
+      <GoogleLogin :callback="callback"/>
+    </div>
+
   </section>
 	
 </template>
@@ -69,6 +83,7 @@
   import { storage }      from "@/utils/storage";
 	import SpinnerCpnt      from "@/components/SpinnerCpnt.vue";
   import { useUserStore } from "@/stores/User";
+  
   export default
   {
     name: "LoginView",
@@ -78,12 +93,19 @@
 		
     setup()
     {
+      const callback = (response) => {
+        // This callback will be triggered when the user selects or login to
+        // his Google account from the popup
+        console.log("Handle the response", response)
+}
       const store = useUserStore();
       return{
         store,
+        callback,
 
       }
-      },
+    },
+    
     data() {
       return {
         login: "",
@@ -101,6 +123,11 @@
     },
     methods: 
     {
+      
+      handleCredentialResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+      },
+      
 			handleShowPwd(){
 				this.seePwd = true;
 			},

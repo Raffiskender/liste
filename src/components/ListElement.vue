@@ -38,14 +38,14 @@
       <p 
         class="title"
         :id = "'p-' + id"
-        v-bind:class="{'done': this.taskDone}"
+        v-bind:class="{'done': done}"
         @mousedown="handleSwitchToEditMode(id)"
-        v-html=this.title>
+        v-html=title>
       </p>
       <button
         class = "aside-p"
-        v-bind:class="{'hide': this.taskDone}"
-        @click="this.handleToggleDone(id)">
+        v-bind:class="{'hide': done}"
+        @click="this.listStore.toggleDone(id);">
           <font-awesome-icon
             class="square"
             icon="fa-regular fa-square"
@@ -54,8 +54,8 @@
       </button>
       <button
         class = "aside-p"
-        @click="this.handleToggleDone(id)"
-        v-bind:class="{'hide': !this.taskDone}">
+        @click="this.listStore.toggleDone(id);"
+        v-bind:class="{'hide': !done}">
           <font-awesome-icon
             color="green"
             class="square"
@@ -64,7 +64,7 @@
       </button>
       <button
         class = "aside-p"
-        @click="handleOnDelete(id)" >
+        @click="this.listStore.delete(id)" >
           <font-awesome-icon
             color="red"
             class="square"
@@ -100,10 +100,8 @@ export default
 	data() {
 		return {
 			editMode: false,
-			initialTitle: this.title,
 			newTitle: this.title,
       preventBlur: false,
-      taskDone : this.done,
       tooMuchCharacteres:false,
 		}
 	},
@@ -112,15 +110,6 @@ export default
 		cleanMessage(message) {
       return this.$sanitize(message);
     },
-    
-    handleToggleDone(id){
-      this.taskDone = ! this.taskDone;
-      this.listStore.updateDone(id, this.taskDone);
-    },
-    
-		handleOnDelete(id){
-      this.listStore.delete(id)
-		},
 	
 		handleSwitchToEditMode(id){
       if (!this.done){
@@ -136,36 +125,34 @@ export default
     
     
 		handleCancelModify(){
-      this.newTitle = this.initialTitle
+      this.newTitle = this.title
       this.tooMuchCharacteres = false
       this.backToDisplayMode();
 		},
-		handleReactivateBlur(){
-    },
     
-		handleSave(event, id){
-     
+    handleSave(event, id){
       this.tooMuchCharacteres = false
       event.preventDefault();
-      
       if (!this.preventBlur){
         
         if(this.newTitle.length > 75){
           this.tooMuchCharacteres = true
         }
         
-        if(this.initialTitle !== this.newTitle && !this.tooMuchCharacteres){
-          this.initialTitle = this.newTitle;
-          this.listStore.updateTitle(id, this.newTitle);
-          this.backToDisplayMode();
-        }
-        if(this.initialTitle == this.newTitle && !this.tooMuchCharacteres){
-          this.backToDisplayMode();
-          }
         if(this.newTitle === ''){
-          this.handleOnDelete(id)
+          this.listStore.delete(id)
           this.backToDisplayMode();
         }
+        if(this.title !== this.newTitle && !this.tooMuchCharacteres){
+          this.listStore.changeTitle(id, this.newTitle)
+          this.backToDisplayMode();
+        }
+        if(this.title == this.newTitle && !this.tooMuchCharacteres){
+          this.backToDisplayMode();
+        }
+        if (event.type == 'submit'){
+          document.getElementById('save-btn-' + id).focus();
+        } 
       }
 		}
 		

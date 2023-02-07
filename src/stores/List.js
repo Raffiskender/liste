@@ -13,6 +13,7 @@ export const useListStore = defineStore('list', {
       const tampon = await listService.findAll()
       this.listData = JSON.parse(tampon)
     },
+    
     async delete(id)
     {
       this.listData = this.listData.filter(list => list.id !== id);
@@ -32,30 +33,28 @@ export const useListStore = defineStore('list', {
       await listService.update(JSON.stringify(this.listData)) 
     },
     
-    async updateTitle(id, newTitle){
-      
-      for (const current in this.listData){
-        if (this.listData[current].id === id){
-          this.listData[current].content = newTitle
-          
+    toggleDone(id){
+      for (const currentElm of this.listData) {
+        if (currentElm.id === id){
+          currentElm.done = ! currentElm.done
         }
       }
-      
-      await listService.update(JSON.stringify(this.listData)) 
-    }, 
+      this.updateDatabase()
+    },
+
+    changeTitle(id, newTitle){
+      for (const currentElm of this.listData) {
+        if (currentElm.id === id){
+          currentElm.content = newTitle 
+        }
+      }
+      this.updateDatabase()
+    },
     
-    async updateDone(id, done){
-      
-      for (const current in this.listData){
-        if (this.listData[current].id === id){
-          this.listData[current].done = done
-          
-        }
-      }
-      
-      await listService.update(JSON.stringify(this.listData)) 
-    }
-      
+    updateDatabase(){
+     
+      listService.update(JSON.stringify(this.listData)) 
+    }, 
       
   }
 })

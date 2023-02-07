@@ -58,7 +58,7 @@
       
       <a href="https://accounts.google.com/o/oauth2/v2/auth?scope=email profile&access_type=online&redirect_uri=https://liste-v2.raffiskender.com/googleLogin&response_type=code&client_id=270319015769-o80is9ik9r6pop7fmojb46ns28pic1li.apps.googleusercontent.com"><img src="@/../public/google.png" style = "width : 180px; height : auto">
       </a>
- 
+
     </div>
 
   </section>

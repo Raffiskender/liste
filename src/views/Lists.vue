@@ -61,7 +61,7 @@
 			<div class="add-form">
 				<form @submit.prevent="this.handleFormSubmit()" >
 					<label for="element"></label>
-					<input type="text" id="element" v-model="this.newElement" placeholder="Nouvelle ligne" @focus="this.engouthCaracteres = true">
+					<input type="text" id="element" v-model="this.newElement" placeholder="Nouvelle ligne" @focus ="this.engouthCaracteres=false">
 					<button class="button" :disabled="this.disableButton" v-bind:class="{'hide': this.disableButton}">{{this.buttonContent}}</button>
 					
 					<SpinnerBtn v-if="this.disableButton" />
@@ -69,8 +69,11 @@
 					<input  v-if="this.newCategoryAppear" type="text" id="element" v-model="this.newElement" placeholder="Nouvelle rubrique">
 				</form>
 
-				<div v-if="!this.engouthCaracteres" >
+				<div class="error" v-if="this.engouthCaracteres == 'tooSmall'" >
 					<p>Entrez au moins une lettre</p>
+				</div>
+        <div class="error" v-if="this.engouthCaracteres == 'tooLarge'" >
+					<p>C'est un peu long, il faut moins de 75 caractères</p>
 				</div>
 			</div>
 		</div>
@@ -126,19 +129,26 @@ export default{
       this.$router.push( {name: '403'} )  },
 
 	methods : {
-		
+    cleanMessage(message) {
+      return this.$sanitize(message);
+    },
     //* Cette methode est assynchrone
 		async handleFormSubmit(){
-			//* Cette variable sert à la gestion d'erreur
-			//* Je l'initialise à true 
+      // Gestion d'erreur
 			this.engouthCaracteres = true;
-			
-			if (this.newElement.length > 1){
+			if (this.newElement.length < 1){
+        this.engouthCaracteres = 'tooSmall';
+      }
+      else if (this.newElement.length > 75) {
+        this.engouthCaracteres = 'tooLarge';
+      }
+      
+      else {
         this.disableButton = true;
         this.buttonContent = ''
         this.newElement = {
           id : Date.now(),
-          content : this.newElement,
+          content : this.cleanMessage(this.newElement),
           done : false
         }
         
@@ -148,9 +158,6 @@ export default{
         this.disableButton = false;
         this.buttonContent = 'Ajouter'
       }
-			else{
-				this.engouthCaracteres = null;
-			}
 		},
 
 		handleToggleCategory(){
@@ -225,6 +232,12 @@ input{
 		&:hover{
 			background: darken(rgb(216, 226, 253), 7.5%);
 		}
+}
+.error{
+  padding-bottom : 0.5em;
+  color:rgb(140, 0, 0);
+  font-weight:bold;
+  text-align:center
 }
 .add-form{
 	background: #fff;

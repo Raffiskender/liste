@@ -63,15 +63,7 @@
           data-login_uri="https://liste-v2.raffiskender.com/googleLogin"
           data-auto_prompt="false">
       </div>
-      <div class="g_id_signin"
-          data-type="standard"
-          data-size="large"
-          data-theme="outline"
-          data-text="sign_in_with"
-          data-shape="rectangular"
-          data-logo_alignment="left">
-      </div>
-      <GoogleLogin :callback="callback"/>
+
     </div>
 
   </section>

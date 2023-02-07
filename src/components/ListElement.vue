@@ -2,79 +2,76 @@
 	<div class="container">
     
     <form
-    @submit="handleSave($event, id)"
-    >
+    @submit="handleSave($event, id)">
       <div
         class="input"
-        v-bind:class = "{hide: !this.editMode}"
-        >
-        
+        v-bind:class = "{hide: !this.editMode}">
         <input
           ref="myInput"
           type="text"
-          :id = id
+          :id = "'input-' + id"
           v-model="this.newTitle"
-          @blur="this.handleSave($event, id)"
-        >
-        <div>
-          <button
-            @mousedown="handleSave($event, id)"
-            style = "margin-right:1em">
-          Enregistrer
-          </button>
-          <button
-            @mousedown="handleCancelModify($event, id)"
-          >
-            Annuler
-          </button>
+          @blur="this.handleSave($event, id)">
+        <div class="error" v-if="this.tooMuchCharacteres">
+          vous devez entrer moins de 75 charactères...
         </div>
       </div>
-      <div class="text"
-        v-bind:class = "{hide: this.editMode}"
+    </form>
+    <div
+      class="input"
+      v-bind:class = "{hide: !this.editMode}"
       >
-        <p 
-          class="title"
-          :id = "'p' + id"
-          v-bind:class="{'done': this.taskDone}"
-          @mousedown="handleSwitchToEditMode(id)"
-          v-html=this.title>
-        </p>
-        <button
-          class = "aside-p"
-          v-bind:class="{'hide': this.taskDone}"
-          @click="this.handleToggleDone(id)"
-        >
-            <font-awesome-icon
+      <button
+        style = "margin-right:1em"
+        :id = "'save-btn-' + id">
+        Enregistrer
+      </button>
+      <button
+        :id = "'cancel-btn-' + id"
+        @mousedown="this.preventBlur = true"
+        @click="handleCancelModify($event)">
+          Annuler
+      </button>
+    </div>
+    <div class="text"
+      v-bind:class = "{hide: this.editMode}" >
+      <p 
+        class="title"
+        :id = "'p-' + id"
+        v-bind:class="{'done': this.taskDone}"
+        @mousedown="handleSwitchToEditMode(id)"
+        v-html=this.title>
+      </p>
+      <button
+        class = "aside-p"
+        v-bind:class="{'hide': this.taskDone}"
+        @click="this.handleToggleDone(id)">
+          <font-awesome-icon
             class="square"
             icon="fa-regular fa-square"
-            alt=""
-            width=""/>
-        </button>
-        <button
-          class = "aside-p"
-          @click="this.handleToggleDone(id)"
-          v-bind:class="{'hide': !this.taskDone}"
-        >
-            <font-awesome-icon
+            alt="Mettre à fait"
+        />
+      </button>
+      <button
+        class = "aside-p"
+        @click="this.handleToggleDone(id)"
+        v-bind:class="{'hide': !this.taskDone}">
+          <font-awesome-icon
             color="green"
             class="square"
             icon="fa-regular fa-square-check"
-            alt=""
-            width=""/>
-          </button>
-          <button
-          class = "aside-p"
-          @click="handleOnDelete(id)" >
-          
+            alt="Mettre en non fait"/>
+      </button>
+      <button
+        class = "aside-p"
+        @click="handleOnDelete(id)" >
           <font-awesome-icon
-          color="red"
-          class="square"
-          icon="fa-regular fa-trash-can"
-          alt=""
-          width=""/>
+            color="red"
+            class="square"
+            icon="fa-regular fa-trash-can"
+            alt="supprimer"/>
         </button>
-      </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -88,7 +85,7 @@ export default
   {
     title: String,
 		id:Number,
-    done:String,
+    done:Boolean,
   },
   
   setup() {
@@ -107,6 +104,7 @@ export default
 			newTitle: this.title,
       preventBlur: false,
       taskDone : this.done,
+      tooMuchCharacteres:false,
 		}
 	},
 	
@@ -125,39 +123,49 @@ export default
 		},
 	
 		handleSwitchToEditMode(id){
-			this.editMode = true;
-      this.preventBlur = false;
-      setTimeout(function(){ document.getElementById(id).focus();})
-		},
-		
-		backToDisplayMode(){
-			this.editMode = false;
+      if (!this.done){
+        this.editMode = true;
+        this.preventBlur = false;
+        setTimeout(function(){ document.getElementById('input-' + id).focus();})
+      }
+    },
+    
+    backToDisplayMode(){
+      this.editMode = false;
 		},
     
     
-		handleCancelModify(event, id){
-      event.preventDefault();
-      document.getElementById('p' + id).focus();
-      this.preventBlur = true;
-			this.newTitle = this.initialTitle
-
+		handleCancelModify(){
+      this.newTitle = this.initialTitle
+      this.backToDisplayMode();
 		},
 		handleReactivateBlur(){
     },
     
-		async handleSave(event, id){
-      if ((event.type == 'blur' && !this.preventBlur) || event.type=='mousedown' || event.type == 'submit'){
+		handleSave(event, id){
+     
+      this.tooMuchCharacteres = false
+      
+      if ((event.type == 'blur' && !this.preventBlur) || event.type == 'submit'){
         event.preventDefault();
         
-        if(this.initialTitle !== this.newTitle && this.newTitle !== this.initialTitle ){
+        if(this.newTitle.length > 75){
+          this.tooMuchCharacteres = true
+        }
+        
+        if(this.initialTitle !== this.newTitle && !this.tooMuchCharacteres){
           this.initialTitle = this.newTitle;
           this.listStore.updateTitle(id, this.newTitle);
+          this.backToDisplayMode();
         }
+        if(this.initialTitle == this.newTitle && !this.tooMuchCharacteres){
+          this.backToDisplayMode();
+          }
         if(this.newTitle === ''){
           this.handleOnDelete(id)
+          this.backToDisplayMode();
         }
       }
-			this.backToDisplayMode();
 		}
 		
 	}
@@ -190,7 +198,11 @@ input{
 .input {
   margin: auto;
 }
-
+.error{
+  text-align:center;
+  color : red;
+  padding-bottom: 0.5em;
+}
 p{
 	width: calc(100% - 4.5em);
 	font-size:1.2em;
@@ -203,7 +215,8 @@ p{
 	}
   &.done{
     text-decoration: line-through;
-    color: rgb(134, 134, 134)
+    color: rgb(134, 134, 134);
+    cursor: default;
   }
 }
 

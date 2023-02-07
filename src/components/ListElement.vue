@@ -137,6 +137,7 @@ export default
     
 		handleCancelModify(){
       this.newTitle = this.initialTitle
+      this.tooMuchCharacteres = false
       this.backToDisplayMode();
 		},
 		handleReactivateBlur(){
@@ -145,9 +146,9 @@ export default
 		handleSave(event, id){
      
       this.tooMuchCharacteres = false
+      event.preventDefault();
       
-      if ((event.type == 'blur' && !this.preventBlur) || event.type == 'submit'){
-        event.preventDefault();
+      if (!this.preventBlur){
         
         if(this.newTitle.length > 75){
           this.tooMuchCharacteres = true

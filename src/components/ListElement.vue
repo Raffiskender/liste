@@ -23,7 +23,9 @@
       >
       <button
         style = "margin-right:1em"
-        :id = "'save-btn-' + id">
+        :id = "'save-btn-' + id"
+        @mousedown="this.preventBlur = true"
+        @click="handleSave($event)">
         Enregistrer
       </button>
       <button
@@ -133,7 +135,7 @@ export default
     handleSave(event, id){
       this.tooMuchCharacteres = false
       event.preventDefault();
-      if (!this.preventBlur){
+      if (!this.preventBlur || event.type=="click"){
         
         if(this.newTitle.length > 75){
           this.tooMuchCharacteres = true

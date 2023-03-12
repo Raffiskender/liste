@@ -1,63 +1,74 @@
 <template>
 	<section>
 		<h1 style = "margin-bottom: 0.5em;">
-			Ma liste
+			Mes listes
 		</h1>
 
     <LoaderView v-if ="! listStore.listData"/>
 
 		<div v-else>
-      <div class="vide" v-if="listStore.listData[0] == 'vide'" >
-        <p> Votre liste est toute vide ! Remplissez-là !</p>
-        <div class="svg">
-          <svg
-            width="37.754887mm"
-            height="64.519531mm"
-            viewBox="0 0 37.754887 64.519531"
-            version="1.1"
-            id="svg8"
-            inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
-            sodipodi:docname="zero.svg.svg">
-            <defs
-              id="defs2" />
-            <g
-              inkscape:label="Calque 1"
-              inkscape:groupmode="layer"
-              id="layer1"
-              transform="translate(-81.569086,-48.910156)">
+     <TabsCpnt/>
+      <!-- Tab content -->
+      <div v-for="item in this.listStore.listData"
+        v-bind:key="item.id"
+        >
+        <div v-if="item.selected">  <!-- Faire un v-for sur les nom ? ou reprendre le nom des onglets ? -->
+        <!-- encore un v-for looop pour le contenu de chaque liste. -->
+          <div :id="'window-' + item.id">
+            <div v-if="item.content == 'vide'" >
+              <p> Votre liste est toute vide ! Remplissez-là !</p>
+              <div class="svg">
+                <svg
+              width="37.754887mm"
+              height="64.519531mm"
+              viewBox="0 0 37.754887 64.519531"
+              version="1.1"
+              id="svg8"
+              inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+              sodipodi:docname="zero.svg.svg">
+              <defs
+                id="defs2" />
               <g
-                id="g1231">
+                inkscape:label="Calque 1"
+                inkscape:groupmode="layer"
+                id="layer1"
+                transform="translate(-81.569086,-48.910156)">
                 <g
-                  id="g1176"
-                  transform="matrix(0.80237356,0,0,0.87338105,19.85089,10.295552)"
-                  style="stroke:#ccc;stroke-width:8.12304;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+                  id="g1231">
+                  <g
+                    id="g1176"
+                    transform="matrix(0.80237356,0,0,0.87338105,19.85089,10.295552)"
+                    style="stroke:#ccc;stroke-width:8.12304;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+                    <path
+                      id="path1113"
+                      style="fill:none;stroke:#ccc;stroke-width:8.12304;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                      d="m 119.91201,81.31131 c 0,-16.069076 -7.43818,-24.048362 -19.46548,-24.048362 -12.0273,0 -19.465479,7.979286 -19.465481,24.048362 -10e-7,16.069081 7.438181,24.04837 19.465481,24.04837 12.0273,0 19.46548,-7.979289 19.46548,-24.04837 z"
+                      sodipodi:nodetypes="ccccc" />
+                  </g>
                   <path
-                    id="path1113"
-                    style="fill:none;stroke:#ccc;stroke-width:8.12304;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-                    d="m 119.91201,81.31131 c 0,-16.069076 -7.43818,-24.048362 -19.46548,-24.048362 -12.0273,0 -19.465479,7.979286 -19.465481,24.048362 -10e-7,16.069081 7.438181,24.04837 19.465481,24.04837 12.0273,0 19.46548,-7.979289 19.46548,-24.04837 z"
+                    style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-feature-settings:normal;font-variation-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;shape-margin:0;inline-size:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#ccc;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate;stop-color:#000000;stop-opacity:1"
+                    d="M 109.62305,48.910156 85.433594,113.42969 h 6.023437 L 115.64844,48.910156 Z"
+                    id="path1203"
                     sodipodi:nodetypes="ccccc" />
                 </g>
-                <path
-                  style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-feature-settings:normal;font-variation-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;shape-margin:0;inline-size:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#ccc;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate;stop-color:#000000;stop-opacity:1"
-                  d="M 109.62305,48.910156 85.433594,113.42969 h 6.023437 L 115.64844,48.910156 Z"
-                  id="path1203"
-                  sodipodi:nodetypes="ccccc" />
               </g>
-            </g>
-          </svg>
+                </svg>
+              </div>
+            </div>
+            <div v-else class="list">
+              <ListElement 
+                v-for="listElement of item.content"
+                v-bind:key="listElement.id"
+                :title="listElement.content"
+                :id="listElement.id"
+                :done="listElement.done"
+              />
+            </div>
+          </div>
+          
         </div>
       </div>
-      <div v-else >
-        <div class="list">
-          <ListElement 
-            v-for="listElement in listStore.listData"
-            v-bind:key="listElement.id"
-            :title="listElement.content"
-            :id="listElement.id"
-            :done="listElement.done"
-          />
-      </div>
-      </div>
+
 			<div class="add-form">
 				<form @submit.prevent="this.handleFormSubmit()" >
 					<label for="element"></label>
@@ -84,6 +95,7 @@
 import ListElement from '@/components/ListElement.vue';
 import LoaderView from '@/components/Layout/Loading.vue';
 import SpinnerBtn from '@/components/SpinnerButtonComponent.vue'
+import TabsCpnt from '@/components/Layout/Tabs.vue'
 import {useListStore} from '@/stores/List';
 import {useUserStore} from '@/stores/User';
 import { userService } from '@/services/userService';
@@ -94,6 +106,7 @@ export default{
     ListElement,
     LoaderView,
     SpinnerBtn,
+    TabsCpnt,
   },
 
   setup() {
@@ -126,12 +139,22 @@ export default{
     if (await userService.isConnected())
       await this.listStore.findAll();
     else
-      this.$router.push( {name: '403'} )  },
+      this.$router.push( {name: '403'} )
+    
+    if (this.listStore.listData == ["vide"] || typeof(this.listStore.listData[0].done) != "undefined"){
+      this.listStore.updateList()
+      typeof(this.listStore.listData[0].done)
+    }
+      
+    //console.log(this.listStore.listData)
+  },
 
 	methods : {
     cleanMessage(message) {
       return this.$sanitize(message);
     },
+
+    
     //* Cette methode est assynchrone
 		async handleFormSubmit(){
       // Gestion d'erreur
@@ -146,14 +169,15 @@ export default{
       else {
         this.disableButton = true;
         this.buttonContent = ''
-        this.newElement = {
+        // il convient de connaitre l'onglet actif pour associer le nouvel élément à cette liste-là.
+        this.newElementObj = {
           id : Date.now(),
           content : this.cleanMessage(this.newElement),
           done : false
         }
         
         //*envoie de la requête à la base de donnée via un await 
-        this.listStore.add(this.newElement);
+        this.listStore.add(this.newElementObj);
         this.newElement= '';
         this.disableButton = false;
         this.buttonContent = 'Ajouter'
@@ -172,7 +196,8 @@ export default{
 			else{
 				this.newCategoryAppear = false
 			}
-		}
+		},
+   
 	}
 }
 </script>
@@ -265,7 +290,12 @@ svg{
   max-height : calc(450px * 1.70);
   width : auto;
 }
-.hide{
+.hide, .tabcontent{
 	display: none;
 }
+ /* Style the tab */
+
+
+
+
 </style>

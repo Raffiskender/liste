@@ -159,7 +159,8 @@ export default{
         }
         //If the tab is not too long to be centered
         else{
-          this.handleLeftArrow((tabsBarPosition - buttonPosition) + (tabsTotal) - (tabsBarWidth / 2) - (buttonWidth / 2))
+          this.handleLeftArrow(tabsBarPosition - buttonPosition + (tabsBarWidth / 2) - (buttonWidth / 2))
+          console.log('here')
         }
       }
     },

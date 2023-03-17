@@ -10,8 +10,8 @@ export const useListStore = defineStore('list', {
   {
     async findAll()
     {
-      const tampon = await listService.findAll()
-      this.listData = JSON.parse(tampon)
+      //console.log(await listService.findAll()) 
+      this.listData = JSON.parse(await listService.findAll())
     },
     
     async delete(id)
@@ -122,7 +122,18 @@ export const useListStore = defineStore('list', {
       for(const item of this.listData){
         item.selected = item.id == id ? true : false
       }
+      this.updateDatabase()
       //console.log(this.listData)
-    }
+    },
+    
+    changeTabName(name, id){
+      for (const item of this.listData){
+        if (item.id ===id){
+          item.tabName = name
+          this.updateDatabase()
+          return
+        }
+      }
+    },
   }
 })

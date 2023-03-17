@@ -140,8 +140,8 @@ export default{
       await this.listStore.findAll();
     else
       this.$router.push( {name: '403'} )
-    
-    if (this.listStore.listData == ["vide"] || typeof(this.listStore.listData[0].done) != "undefined"){
+      
+    if (this.listStore.listData == "vide" || typeof(this.listStore.listData[0].done) == "boolean"){
       this.listStore.updateList()
       typeof(this.listStore.listData[0].done)
     }

@@ -4,8 +4,8 @@ import { storage } from "@/utils/storage";
 export const listService =
 {
   // Propriété qui stocke la BASE URL de notre API
-	base_url : "http://192.168.42.124/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
-	//base_url : "http://192.168.1.40/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
+	//base_url : "http://192.168.42.124/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
+	base_url : "http://192.168.1.40/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
 	//base_url : "https://listeback-v2.raffiskender.com/wp-json/",
 
   // Méthode pour se connecter

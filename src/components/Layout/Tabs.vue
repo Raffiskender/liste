@@ -6,9 +6,9 @@
     @click="handleLeftArrow()"
     
     >
-    <font-awesome-icon icon="fa-solid fa-less-than" />
-  </button>
-  <div class="tab">
+      <font-awesome-icon icon="fa-solid fa-less-than" />
+    </button>
+    <div class="tab">
       <button 
       v-for="currentTab in this.listStore.listData"
       v-bind:key="currentTab.id"
@@ -21,9 +21,9 @@
           :id="'form-' + currentTab.id"
           class='hide'
           @submit="this.handleSaveTitle($event, currentTab.id)"
-        >
+          >
           <input
-          v-model="currentTab.tabName"
+          :value="currentTab.tabName"
           :id="'input-' + currentTab.id"
           @blur="this.handleSaveTitle($event, currentTab.id)"
           
@@ -44,7 +44,7 @@
       </button>
       <button
         class="tablinks red"
-        @click="this.handleRemoveTab()">
+        @click="this.confirmDeletion = true">
           <font-awesome-icon icon="fa-solid fa-minus" />
       </button>
       <button
@@ -53,44 +53,64 @@
       @click="handleRightArrow()"
       >
       <font-awesome-icon icon="fa-solid fa-greater-than" />
+      </button>
+    </div>
+  </div>
+<div class="errors" v-if="this.errors.tooLong">
+  Ne pas dépasser 25 charactères
+</div>
+<div class="confirm" v-if="this.confirmDeletion">
+    <p>Voulez-vous vraiment supprimer cet onglet ? </p>
+    <button
+    class="red"
+    @click="this.removeTab()">
+    oui
     </button>
-  </div>
-  </div>
- 
+    <button
+    @click="this.confirmDeletion = false">
+    non
+    </button>
+</div>
 </template>
 
 <script>
 import {useListStore} from '@/stores/List';
 
-export default{
-  name : 'TabsCpnt',
-  data() {
-    return {
-      showArrow : 0,
-      preventEnter : 0,
-      modifyMode : false,
-    }
-  },
+export default
+{
+  name: "TabsCpnt",
+ 
   created(){
     window.addEventListener("resize", this.resize);
   },
   
   setup() {
-    const listStore = useListStore();
-    return{
-      listStore,
-    }
+    // Setup store
+    const listStore = useListStore();    
+		return { listStore }
   },
   mounted() {
     this.resize()
     document.querySelector('.tab').addEventListener("scroll", this.disableAnArrow );
     this.disableAnArrow()
     setTimeout( () => {
-       this.ajustTabPlace(document.querySelector('.active').id.substring(10))
+      this.ajustTabPlace(document.querySelector('.active').id.substring(10))
     }, 100)
     //this.width = window.innerWidth;
   },
-
+  
+  data() {
+    return {
+      showArrow : 0,
+      preventEnter : 0,
+      newTabTitle : "",
+      errors : {
+        "tooLong" : false
+      },
+      confirmDeletion : false
+    }
+  },
+  
   methods : {
     openTab(event, id){
       if (event.currentTarget.className == 'tablinks'){
@@ -117,6 +137,7 @@ export default{
         
         selectedForm.classList.remove('hide')
         selectedTab.classList.add('hide')
+        selectedInput.setAttribute("size", 5)
         selectedInput.focus()
         this.preventEnter = 1
            // setTimeout(function(){ document.getElementById('input-' + id).focus();}, 10)
@@ -144,7 +165,6 @@ export default{
         //If the tab is too long to be centered
         if ((tabsBarPosition + tabsBarWidth / 2 + buttonWidth / 2) > tabsTotal){
           this.handleRightArrow((buttonTotal - tabsTotal) + 20)
-          console.log('ici')
         }
         //If the tab is not too long to be centered
         else{
@@ -160,18 +180,30 @@ export default{
         //If the tab is not too long to be centered
         else{
           this.handleLeftArrow(tabsBarPosition - buttonPosition + (tabsBarWidth / 2) - (buttonWidth / 2))
-          console.log('here')
         }
       }
     },
     
     handleSaveTitle(event, id){
       event.preventDefault();
-      document.getElementById('form-' + id).classList.add('hide')
-      document.getElementById('tab-' + id).classList.remove('hide')
-      this.listStore.changeTabName(document.getElementById('input-' + id).value, id)
+      this.errors.tooLong = false
+      
+      this.newTabTitle = document.getElementById('input-' + id).value
+      
+      
+      if (this.newTabTitle == ""){
+        this.listStore.removeTab()
+      }
+      if(this.newTabTitle.length > 25){
+        this.errors.tooLong = true
+        document.getElementById('input-' + id).value = "coucou !"
+        return
+      }
+      document.querySelector('#form-' + id).classList.add('hide')
+      document.querySelector('#tab-' + id).classList.remove('hide')
       setTimeout(()=>{this.preventEnter = 0}, 10)
-
+      
+      this.listStore.changeTabName(this.newTabTitle, id)
     },
     
     handleNewTab(){
@@ -183,21 +215,22 @@ export default{
       
       //this.activeTab = newTab.id
     },
-    handleRemoveTab(){
+    
+    removeTab() {
       this.listStore.removeTab()
       setTimeout(() => {
         this.resize()
-      }, 5)  
-      //this.activeTab = newTab.id
+      }, 5)
+      this.confirmDeletion = false
     },
 
     handleLeftArrow(slide = 100){
       document.querySelector('.right-arrow').disabled = false
       const tab = document.querySelector(".tab");
       tab.scrollLeft -= slide
-      setTimeout(() => {
-        this.disableAnArrow()
-      }, 450); 
+      // setTimeout(() => {
+      //   this.disableAnArrow()
+      // }, 450); 
       
     },
     handleRightArrow(slide = 100){
@@ -205,9 +238,9 @@ export default{
       const tab = document.querySelector(".tab");
       tab.scrollLeft += slide
       
-      setTimeout(() => {
-        this.disableAnArrow()
-      }, 450);
+      // setTimeout(() => {
+      //   this.disableAnArrow()
+      // }, 450);
      },
     resize(){
       const container = document.querySelector(".container");
@@ -219,20 +252,20 @@ export default{
     
     disableAnArrow(){
       const tab = document.querySelector(".tab");
+      const tabScrollLeftMax = tab.scrollWidth - tab.clientWidth
       let leftArrow = document.querySelector('.left-arrow')
       let rightArrow = document.querySelector('.right-arrow')
       if (tab.scrollLeft == 0){
-          leftArrow.disabled = true
+          leftArrow.disabled  = true
           rightArrow.disabled = false
-          
       }
-      else if (tab.scrollLeft == tab.scrollLeftMax){
+      else if (tab.scrollLeft == tabScrollLeftMax){
         rightArrow.disabled = true
-        leftArrow.disabled = false
+        leftArrow.disabled  = false
       }
       else{
         rightArrow.disabled = false
-        leftArrow.disabled = false
+        leftArrow.disabled  = false
         
       }
     }
@@ -243,13 +276,14 @@ export default{
 
 <style lang="scss" scoped>
 .container {
+  //box-sizing: border-box;
   margin:0;
   height : 40px;
 	max-width: 450px;
   display:flex;
   justify-content: flex-start;
   align-items: center;
-  //border:red solid 1px
+  //border:red solid 1px;
   border-bottom: 1px solid #ccc;
 }
 .right-side{
@@ -260,13 +294,25 @@ export default{
   //flex-grow property to 2, flex-shrink to 1 and flex-basis to auto.
   display: flex;
   align-items: center;
+  //OverFlow is auto to keep scrolling on touching devices.
   overflow-x: auto;
-  scrollbar-width: none;
-  //-webkit-overflow-scrolling: touch;
+  //Managing scroll bar
   scroll-behavior: smooth;
-  //border: solid red 1px;
+  //FireFox
+  scrollbar-width: none;
+  //Edge
+  -ms-overflow-style: none;
+  //Chrome & Safari
+  &::-webkit-scrollbar{
+    display: none;
+  }
 }
-
+input{
+  border:none;
+  background: #eee;
+  border-bottom:2px rgb(216, 226, 253) solid;
+  //width : 400px;
+}
 /* Style the buttons that are used to open the tab content */
 button {
   white-space: nowrap;
@@ -274,7 +320,7 @@ button {
   border: none;
   border-bottom: solid #00000000 5px;
   cursor: pointer;
-  padding: 10px 10px;
+  padding: 9px 10px;
   transition: 0.3s;
  
   &:hover {
@@ -305,7 +351,32 @@ button {
   }
 
 }
-
+.errors {
+  margin-top : 5px;
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
+.confirm{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ddd;
+  height: 40px;
+  >button{
+    padding : 7px 10px;
+    //border : 1px solid red;
+    margin: 0 3px;
+    &:hover{
+      box-sizing: border-box;
+     //background-color: #ccc;
+      font-size:1.2em;
+      transition: 500;
+      padding: 3px 5px;
+    }
+  }
+  
+}
 .hide{
   display:none;
 }

@@ -10,25 +10,28 @@ export const useListStore = defineStore('list', {
   {
     async findAll()
     {
-      //console.log(await listService.findAll()) 
       this.listData = JSON.parse(await listService.findAll())
     },
     
-    async delete(id)
-    {
-      for (const item of this.listData){
-        if (item.selected){
-          item.content = item.content.filter(list => list.id !== id);
-          if (item.content.length == 0) {
-            item.content = 'vide';
-          }
-        return
-        }
-      }  
-      await listService.update(JSON.stringify(this.listData)) 
+    updateDatabase(){
+      listService.update(JSON.stringify(this.listData)) 
+    },
+     
+    //* this function is call to switch the list to V2.
+    updateList(){
+      const listDataTampon = this.listData
+      this.listData = [{
+        id : 1,
+        tabName : "liste",
+        selected: true,
+        content : listDataTampon,
+      }]
+
+    this.updateDatabase
     },
     
-    async add(newElement){
+    //* function to manage lines of the list.
+    add(newElement){
       for (const item of this.listData){
         if (item.selected){
           if (item.content == 'vide'){
@@ -41,20 +44,6 @@ export const useListStore = defineStore('list', {
       }
     },
     
-    toggleDone(id){
-      for (const item of this.listData){
-        if (item.selected){
-          for (const currentElm of item.content) {
-            if (currentElm.id === id){
-              currentElm.done = ! currentElm.done
-              this.updateDatabase()
-              return
-            }
-          }
-        }
-      }
-    },
-
     changeTitle(id, newTitle){
       for (const item of this.listData){
         if (item.selected){
@@ -68,22 +57,34 @@ export const useListStore = defineStore('list', {
         }
       }
     },
-    
-    updateDatabase(){
-      listService.update(JSON.stringify(this.listData)) 
-    }, 
-    
-    updateList(){
-      const listDataTampon = this.listData
-      this.listData = [{
-        id : 1,
-        tabName : "liste",
-        selected: true,
-        content : listDataTampon,
-      }]
-
-    this.updateDatabase
+    delete(id)
+    {
+      for (const item of this.listData){
+        if (item.selected){
+          item.content = item.content.filter(list => list.id !== id);
+          if (item.content.length == 0) {
+            item.content = 'vide';
+          }
+        return
+        }
+      }  
+      this.updateDatabase()
     },
+    toggleDone(id){
+      for (const item of this.listData){
+        if (item.selected){
+          for (const currentElm of item.content) {
+            if (currentElm.id === id){
+              currentElm.done = ! currentElm.done
+              this.updateDatabase()
+              return
+            }
+          }
+        }
+      }
+    },
+    
+    //* functions to manage Tabs
     createNewTab(){
       const newTab = {
         id: Date.now(),
@@ -96,8 +97,8 @@ export const useListStore = defineStore('list', {
       }
       this.listData.push(newTab);
       this.updateDatabase()
+      return newTab.id
     },
-    
     removeTab(){
       let idMoinsUn = 1, item, done = false
       
@@ -107,25 +108,21 @@ export const useListStore = defineStore('list', {
           this.updateDatabase()
           done = true
         }
-        if (item.selected && item.id ===1){
-          console.log("vous ne pouvez pas supprimer la liste n°1")
-          break
+        if (item.selected && item.id === 1){
+          return false
         }
         
         idMoinsUn = !done ? item.id : idMoinsUn
       }
       this.changeSelectedTab(idMoinsUn)
-      
+      return idMoinsUn
     },
-    
     changeSelectedTab(id){
       for(const item of this.listData){
         item.selected = item.id == id ? true : false
       }
       this.updateDatabase()
-      //console.log(this.listData)
     },
-    
     changeTabName(name, id){
       for (const item of this.listData){
         if (item.id ===id){
@@ -135,5 +132,10 @@ export const useListStore = defineStore('list', {
         }
       }
     },
+    
+    //*return selected tab
+    selectedTab(){
+      return(this.listData.filter(item => item.selected == true)[0].id)
+    }
   }
 })

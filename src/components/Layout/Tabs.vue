@@ -46,7 +46,8 @@
     <div class="right-side">
       <button
         class="tablinks"
-        @click="this.handleNewTab()">
+        @click="this.handleNewTab()"
+        :disabled="this.listStore.listData.length >= 15">
           <font-awesome-icon icon="fa-solid fa-plus" />
       </button>
       <button
@@ -70,6 +71,9 @@
 </div>
 <div class="errors" v-if="this.errors.deleteTabNbOne">
   Vous ne pouvez pas supprimer le premier onglet...
+</div>
+<div class="errors" v-if="this.errors.tooMuchTabs">
+  Vous ne pouvez pas créer plus de 15 onglets...
 </div>
 <div class="confirm" v-if="this.confirmDeletion">
     <p>Voulez-vous vraiment supprimer cet onglet ? </p>
@@ -123,7 +127,8 @@ export default
       newTabTitle : "",
       errors : {
         "tooLong" : false,
-        "deleteTabNbOne":false
+        "deleteTabNbOne":false,
+        "tooMuchTabs" : false,
       },
       confirmDeletion : false,
     }
@@ -189,14 +194,22 @@ export default
       this.listStore.changeTabName(this.newTabTitle, id)
     },  
     handleNewTab(){
-      const newId = this.listStore.createNewTab()
-      setTimeout(() => {
-        this.resize()
+      if (this.listStore.listData.length < 15) {
+        const newId = this.listStore.createNewTab()
+        setTimeout(() => {
+          this.resize()
+          }, 5)
+        setTimeout(() => {
+          this.ajustTabPlace(newId)
+          this.disableAnArrow()
         }, 5)
-      setTimeout(() => {
-        this.ajustTabPlace(newId)
-        this.disableAnArrow()
-      }, 5)
+      }
+      else  {
+        this.errors.tooMuchTabs = true
+        setTimeout(() => {
+          this.errors.tooMuchTabs = false
+        }, 2000)
+      }
       //console.log(container.scrollWidth)
       
       //this.activeTab = newTab.id

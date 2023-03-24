@@ -11,6 +11,9 @@ export const useListStore = defineStore('list', {
     async findAll()
     {
       this.listData = JSON.parse(await listService.findAll())
+      if (this.listData == "vide" || (this.listData[0].id != 1)){
+        this.updateList()
+      }
     },
     
     updateDatabase(){
@@ -27,7 +30,7 @@ export const useListStore = defineStore('list', {
         content : listDataTampon,
       }]
 
-    this.updateDatabase
+      this.updateDatabase
     },
     
     //* function to manage lines of the list.

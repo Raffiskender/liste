@@ -16,9 +16,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import faEye */
 import { faEye, faEyeSlash, faLessThan, faGreaterThan, faPlus, faMinus} from '@fortawesome/free-solid-svg-icons'
-import { faSquare, faSquareCheck, faTrashCan} from '@fortawesome/free-regular-svg-icons'
+import { faCircleCheck, faCircleXmark, faSquare, faSquareCheck, faTrashCan} from '@fortawesome/free-regular-svg-icons'
 
-library.add(faEye, faEyeSlash, faSquare, faSquareCheck, faTrashCan, faLessThan, faGreaterThan, faPlus, faMinus)
+library.add(faCircleCheck, faCircleXmark, faEye, faEyeSlash, faSquare, faSquareCheck, faTrashCan, faLessThan, faGreaterThan, faPlus, faMinus)
 
 const pinia = createPinia()
 

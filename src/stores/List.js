@@ -12,7 +12,7 @@ export const useListStore = defineStore('list', {
     {
       this.listData = JSON.parse(await listService.findAll())
       if (this.listData == "vide" || (this.listData[0].id != 1)){
-        this.updateList()
+        this.upgradeList()
       }
     },
     
@@ -21,7 +21,7 @@ export const useListStore = defineStore('list', {
     },
      
     //* this function is call to switch the list to V2.
-    updateList(){
+    upgradeList(){
       const listDataTampon = this.listData
       this.listData = [{
         id : 1,
@@ -68,10 +68,10 @@ export const useListStore = defineStore('list', {
           if (item.content.length == 0) {
             item.content = 'vide';
           }
+        this.updateDatabase()
         return
         }
       }  
-      this.updateDatabase()
     },
     toggleDone(id){
       for (const item of this.listData){
@@ -138,7 +138,12 @@ export const useListStore = defineStore('list', {
     
     //*return selected tab
     selectedTab(){
-      return(this.listData.filter(item => item.selected == true)[0].id)
+     //console.log(this.listData.length)
+      for(const item of this.listData){
+        if (item.selected == true)
+          return item.id
+      }
+      //if (this.listData.length > 1)
     }
   }
 })

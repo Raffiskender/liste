@@ -28,12 +28,12 @@
       </label>
 			
       <label>
-        Login
+        Identifiant
         <input
 					type="text"
 					name="username"
 					v-model="this.username"
-					placeholder="username"
+					placeholder="Identifiant"
 					required/>
 					
         <div class="error" v-if="this.errors.usernameEmpty">

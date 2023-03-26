@@ -11,7 +11,7 @@
           :to="{name : 'login'}" 
           v-if="!isConnected"
           class="li">
-					Connection
+					Connexion
 				</router-link>
 				
         <router-link :to="{name : 'suscribe'}" 

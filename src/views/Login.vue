@@ -3,7 +3,7 @@
     <h2>Connexion</h2>
     <form @submit.prevent="this.handleFormSubmit">
       <label>
-        Login ou e-mail
+        Identifiant ou e-mail
         <input type="text" name="login" v-model="this.login" placeholder="Paul Position"/>
         <div class="error" v-if="this.errors.loginEmpty">
           Vous devez saisir un identifiant !
@@ -60,7 +60,22 @@
       </a>
 
     </div>
+    <div id="g_id_onload"
+     data-client_id="270319015769-o80is9ik9r6pop7fmojb46ns28pic1li.apps.googleusercontent.com"
+     data-context="signin"
+     data-ux_mode="popup"
+     data-login_uri="https://liste-v2.raffiskender.com/googleLogin"
+     data-auto_prompt="false">
+    </div>
 
+    <div class="g_id_signin"
+     data-type="standard"
+     data-shape="rectangular"
+     data-theme="outline"
+     data-text="signin_with"
+     data-size="large"
+     data-logo_alignment="left">
+</div>
   </section>
 	
 </template>
@@ -104,11 +119,7 @@
     methods: 
     {
       
-      handleCredentialResponse(response) {
-        console.log("Encoded JWT ID token: " + response.credential);
-      },
-      
-			handleShowPwd(){
+      handleShowPwd(){
 				this.seePwd = true;
 			},
 			
@@ -178,7 +189,10 @@
 </script>
 
 <style lang="scss" scoped>
-
+#g_id_onload, .g_id_signin{
+  
+  height: 50px
+}
 /*This min-height section is to force mozilla android to keep the nav-bar.*/
 section{
 	min-height: calc(100vh + 0.05em);

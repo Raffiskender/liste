@@ -45,43 +45,4 @@ export const listService =
     } );
     return response.data;
   },
-
-  async patch(elementId, newTitle)
-	{
-		const userData = storage.get( "userData" );
-
-    const response = await axios.patch(
-			this.base_url + "wp/v2/list_element/" + elementId,
-			{
-        title: newTitle,
-			},
-			{
-				headers:{
-						Authorization : "Bearer " + userData.token
-				}
-			}
-    ).catch( function() {
-      return { data : null };
-    } );
-		console.log(response.data);
-    return response.data;
-  },
-
-  async delete(listId)
-	{
-		const userData = storage.get( "userData" );
-
-    await axios.delete(
-			this.base_url + "wp/v2/list_element/" + listId,
-			{
-				headers:{
-						Authorization : "Bearer " + userData.token
-				}
-			}
-    ).catch( function() {
-      return false;
-    } );
-		
-    return true;
-  }
 };

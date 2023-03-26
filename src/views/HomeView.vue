@@ -11,7 +11,7 @@
 			</p>
 			<p class="title">Le projet (d'un mot)</p>
 			
-			<p>Il s'agit d'une liste de course. Çà ne paye pas de mine, mais le back-end (WordPress) gère :
+			<p>Il s'agit d'un gestionnaire de listes. Ça ne paye pas de mine, mais le back-end (WordPress) gère :
 			</p>
 			<ul>
         <li>La création des utilisateurs</li>
@@ -22,9 +22,9 @@
 				<li>La gestion de la connexion est faite par JWT Authentication for wp Rest api</li>
 			</ul>
 			
-      <p>Le front est pour sa part programmé en Vue.js, framework que j'affetionne pour sa simplicité, sa logique, sa légèreté et son adaptablilité et sa robustesse. On y trouve :</p>
+      <p>Le front est pour sa part programmé en Vue.js, framework que j'affectionne pour sa simplicité, sa logique, sa légèreté, son adaptablilité et sa robustesse. On y trouve :</p>
       <ul>
-        <li>Deux stores pour la gestion de l'utilisateur et de sa liste</li>
+        <li>Deux stores pour la gestion de l'utilisateur et des listes</li>
         <li>Un router</li>
         <li>De la sécurisation de formulaires</li>
         <li>Un tas de requêtes à l'api WordPress</li>
@@ -35,9 +35,9 @@
 				<li>La page profil utilisateur</li>
 				<li>Des pages 403 et 404 un peu plus glamour</li>
 				<li>La persistance de la connexion via un cookie plutôt que par le localStorage</li>
-				<li>La création de rubriques pour gérer plusieurs listes <a @mouseover="this.handleDisplayFootnote($event)" @mouseleave="this.handleHideFootnote()" @touchstart="this.handleDisplayFootnote()" @scroll="this.handleHideFootnote()">*</a>
+				<!-- <li>La création de rubriques pour gérer plusieurs listes <a @mouseover="this.handleDisplayFootnote($event)" @mouseleave="this.handleHideFootnote()" @touchstart="this.handleDisplayFootnote()" @scroll="this.handleHideFootnote()">*</a>
           <p class="foot-note">Précision : Cette idée s'en va doucement aux oubliettes. En effet, je préfère privilégier la simplicité, plutôt que d'avoir plein de fonctionnalités pouvant géner des utilisateurs pas très à l'aise avec l'outil numérique.</p>
-        </li>
+        </li> -->
         </ul>
 			<p class="title last" style="font-weight: bold;">
 				Pour commencer il faut <router-link :to="{name : 'login'}">vous connecter</router-link> ou  <router-link :to="{name : 'suscribe'}">créer un compte</router-link>.
@@ -76,7 +76,7 @@ export default {
     
     handleHideFootnote(){
       const p = document.querySelector('.foot-note')
-      console.log(p);
+      //console.log(p);
       p.style.opacity = 0;
       p.style['z-index'] = -1;
     },

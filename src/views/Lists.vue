@@ -1,7 +1,7 @@
 <template>
 	<section>
 		<h1 style = "margin-bottom: 0.5em;">
-			Mes listes
+			Les listes
 		</h1>
 
     <LoaderView v-if ="! listStore.listData"/>
@@ -16,7 +16,7 @@
         <!-- encore un v-for looop pour le contenu de chaque liste. -->
           <div :id="'window-' + item.id">
             <div v-if="item.content == 'vide'" >
-              <p> Votre liste est toute vide ! Remplissez-là !</p>
+              <p style="text-align: center"> Votre liste est toute vide ! Remplissez-là !</p>
               <div class="svg">
                 <svg
               width="37.754887mm"
@@ -272,7 +272,8 @@ input{
   justify-content: center;
 }
 .svg{
-  height: calc(100vh - 2.2em - 2.3em - 5em);
+  //border: solid 1px red;
+  height: calc(100vh - 2.2em - 2.3em - 6em - 40px);
   display:flex;
   align-items: center;
   justify-content: center;

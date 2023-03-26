@@ -97,6 +97,7 @@ export default
   name: "TabsCpnt",
  
   created(){
+    
     window.addEventListener("resize", this.resize);
   },
   

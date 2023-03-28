@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
 import { storage } from '@/utils/storage'
 
-export  const useUserStore = defineStore('User', {
+export const useUserStore = defineStore('User', {
   state: () => ({
     isConnected: false,
+    user: false
   }),
 
   actions: {
@@ -24,5 +25,9 @@ export  const useUserStore = defineStore('User', {
       else
         this.userDisconnection()
     },
+    createUser(data){
+      this.user = data
+    }
+    
 	},
 })

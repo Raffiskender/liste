@@ -194,12 +194,14 @@ input{
   color : red;
   padding-bottom: 0.5em;
 }
-p{
+p.title{
 	width: calc(100% - 4.5em);
 	font-size:1.2em;
 	font-family:'Quicksand', Arial, Helvetica, sans-serif ;
 	color:rgb(0, 89, 255);
   margin : 00.5em 0em;
+  // overflow: hidden;
+  word-wrap:break-word;
 	&:hover
 	{
 		cursor:pointer;

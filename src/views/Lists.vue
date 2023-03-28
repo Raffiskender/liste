@@ -96,9 +96,10 @@ import ListElement from '@/components/ListElement.vue';
 import LoaderView from '@/components/Layout/Loading.vue';
 import SpinnerBtn from '@/components/SpinnerButtonComponent.vue'
 import TabsCpnt from '@/components/Layout/Tabs.vue'
-import {useListStore} from '@/stores/List';
-import {useUserStore} from '@/stores/User';
-import { userService } from '@/services/userService';
+import { userService }  from '@/services/userService'
+import { useListStore } from '@/stores/List';
+import { useUserStore } from '@/stores/User';
+//import { userService } from '@/services/userService';
 
 export default{
   name:'ListView',
@@ -136,11 +137,14 @@ export default{
 	},
   
   async created() {
-    if (await userService.isConnected())
-      await this.listStore.findAll();
-    else
+    if (await userService.isConnected()){
+      //this.userStore.userConnection()
+      await this.listStore.findAll()
+    }
+    else{
       this.$router.push( {name: '403'} )
-    },
+    }
+  },
   
 	methods : {
     cleanMessage(message) {

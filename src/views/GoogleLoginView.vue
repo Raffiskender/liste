@@ -23,15 +23,15 @@ export default{
   {
     let code  = this.$route.query['code'];
     
-    let data = await googleService.login(code);
+    const data = await googleService.login(code);
     
     storage.set( "userData", data );
     
-    const store = useUserStore();
+    const userStore = useUserStore();
         
     if( await userService.isConnected() )
     {
-      store.userConnection();
+      userStore.userConnection();
     }
     
     this.$router.push( { name : 'list' } );

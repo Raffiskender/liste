@@ -95,9 +95,9 @@
 		
     setup()
     {
-      const store = useUserStore();
+      const userStore = useUserStore();
       return{
-        store,
+        userStore,
       }
     },
     
@@ -149,8 +149,8 @@
         {
 
           // Envoie de la requette à l'endpoint JWT et récupération d'un token de connexion
-          let data = await userService.login( this.login, this.password );
-
+          const data = await userService.login( this.login, this.password );
+          
           storage.set( "userData", data );
 					
 					if (data == null){
@@ -174,7 +174,8 @@
             // que l'utilisateur s'est connecté avec succès
             // this.$emit( "user-connected" );
             // VueX : Plus besoin de s'embeter a faire remonter des events
-            this.store.userConnection();
+            this.userStore.userConnection();
+            this.userStore.createUser(data)
 						this.awaiting = false
 						
 						//console.log("connecté");

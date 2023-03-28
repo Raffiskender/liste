@@ -9,6 +9,7 @@
 import NavCpnt from '@/components/Layout/NavComponent.vue'
 import {useUserStore} from '@/stores/User'
 import {userService} from '@/services/userService';
+//import { storage } from "@/utils/storage";
 
 export default{
   name: 'App',
@@ -24,10 +25,11 @@ export default{
     }
   },
   async created(){
-    this.userStore.setConnected( await userService.isConnected() )
+    this.userStore.setConnected(await userService.isConnected())
+      //this.userStore.createUser(storage.get( "userData" ))
+    //document.querySelector('#deconnect').classList.remove("router-link-active", "router-link-exact-active")
   }
-  }
-
+}
 </script>
 
 <style lang="scss">

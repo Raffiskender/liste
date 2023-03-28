@@ -1,10 +1,17 @@
 <template>
   <nav>
 			<ul>
+        <router-link :to="{name : 'home'}"
+        class="li"
+        style="display: block;"
+        id="deconnect"
+        v-if="isConnected"
+        @click="this.store.userDisconnection()">
+        <span>Déconnexion</span>
+      </router-link>  
         <router-link
           :to="{name : 'home'}" 
-          class="li"
-          v-if="!isConnected">
+          class="li">
         Accueil
 				</router-link>
         <router-link
@@ -20,12 +27,6 @@
 					Inscription
 				</router-link>
 				
-        <router-link :to="{name : 'home'}"
-        class="li"
-        v-if="isConnected"
-        @click="this.store.userDisconnection()">
-        <span>Déconnexion</span>
-      </router-link>  
       
       <router-link :to="{name : 'list'}" 
       v-if="isConnected"
@@ -113,7 +114,7 @@ a{
 span{
 			color: rgb(180, 0, 0);
 		}
-.router-link-active{
+.router-link-exact-active{
   display:none;
 }
 </style>

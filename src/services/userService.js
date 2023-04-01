@@ -8,10 +8,10 @@ export const userService =
     
     // Propriété qui stocke la BASE URL de notre API
     //
-    //base_url : "http://192.168.42.124/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
+    base_url : "http://192.168.42.124/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
     //base_url : "http://192.168.1.40/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
     //base_url : "https://listeback-v2.raffiskender.com/wp-json/",
-    base_url : "http://localhost/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
+    //base_url : "http://localhost/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
 
     success : '',
   
@@ -75,19 +75,22 @@ export const userService =
           username   :login,
           email      :eMail,
           password   :password,
-        }).catch( function(response) {
+        }).catch( (response) => {
           // Ici, j'indique a JS quoi faire si la requete échoue (erreur réseau, etc)
             //console.log(response.response.data.message);
             this.success = 0;
+            //* catch will return to the suscribe function
             return response
           }
         );
+      //* everything went well
       if (this.success == 1){
         return {
           'success': 1,
           'response': response.data,
         }
       }
+      //* we encoutered an error.
       else {
         return {
         'success': 0,

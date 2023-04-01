@@ -262,6 +262,7 @@ export default {
       
       if (!this.errors.passwordEmpty && !this.errors.passwordVerifyEmpty && !this.errors.invalidPassword){
         const response = await userService.passwordReset(this.password, this.userKey, this.userId);
+        console.log('ici c\'est passé')
         //* If we have a message, it means we have an error...
         
         if (response.success == 1){

@@ -1,6 +1,8 @@
 <template>
 	<router-view v-slot="{ Component }">
-		<component :is="Component" />
+    <!-- <transition name="fade" mode="out-in"> -->
+      <component :is="Component" />
+    <!-- </transition> -->
 	</router-view>
 	<NavCpnt />
 </template>
@@ -65,5 +67,14 @@ h1, h2, h3, p, ul, li{
 		color: blueviolet;
 		text-align: center;
 	}
+  
+.fade-enter-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 
 </style>

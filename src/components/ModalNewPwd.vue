@@ -5,19 +5,19 @@
 			<transition name="modal-inner-animation">
 				<div v-show="modalActive" class="modal-inner">
 					<font-awesome-icon class="close-btn"  @click="close" icon="fa-regular fa-circle-xmark" />
-            <slot>
-            </slot>
+					<slot>
+					</slot>
 					<button @click="close">Fermer</button> 
 				</div>
 			</transition>
 		</div>
 	</Transition>
-  
+		
 </template>
 
 <script>
 export default {
-	name : 'ModalView',
+	name : 'ModalNewPwd',
 	props : ["modalActive"],
 	
 	setup(props, {emit}) {
@@ -68,21 +68,14 @@ export default {
 .modal-inner{
 	height: auto;
 	width: 80%;
-	//max-width: 680px;
-	
-	background:#e5e5e5;
-	
+	max-width: 680px;	
 	border-radius: 1em;
 	padding: 1em;
-  margin:3em;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	>.close-btn{
-    position:relative;
-    top:0;
-    right: 0;
-    //align-self: flex-end;
+		align-self: flex-end;
 		width: 1.5em;
 		height: 1.5em;
 		color:blueviolet;
@@ -91,7 +84,6 @@ export default {
 			cursor:pointer;
 		}
 }
-
 	button{
 		margin: 0.5em auto;
 		display: block;
@@ -100,7 +92,6 @@ export default {
 		border-radius: 0.3em;
 		border:none;
 		color : rgb(255, 255, 255);
-    font-size: 1.2em;
 		transition: 0.2s ease;
 		>a{
 			color : white;

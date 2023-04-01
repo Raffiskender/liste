@@ -1,5 +1,11 @@
 <template>
   <h3>Mon profil</h3>
+  <modale v-if="showModal">
+    ceci est ma modale
+    <button
+      @click="showModal=false">Fermer</button>
+  </modale>
+  
   <LoaderView v-if ="! this.userStore.user"/>
   <div class="page" v-else>
     <div class="container">
@@ -21,8 +27,13 @@
     
     <p
       class="link"
-      @click="openPwdChange()"
+      @click="showModal = true"
       >modifier mon mot de passe</p>
+      <passwordInput
+      label="Entrez votre mot de passe actuel"
+      placeHolder="coucou"
+      name="old-password"/>
+      
     <div v-if="changePassword">
       <label>
         Mot de passe actuel
@@ -200,19 +211,21 @@
 import {useUserStore} from '@/stores/User';
 import { userService } from '@/services/userService'
 import LoaderView from '@/components/Layout/Loading.vue';
+import PasswordInput from '@/components/PasswordInput.vue';
 //import SpinnerCpnt from '@/components/SpinnerCpnt.vue'
 
 export default{
   name:'ProfilView',
   components: {
     LoaderView,
+    PasswordInput
   //  SpinnerCpnt,
   },
   data() {
     return{
       date : false,
       month : '',
-      
+      showModal:false,
       changePassword: false,
       email: '',
       username: '',
@@ -409,7 +422,8 @@ h1, h2, h3, p, ul, li{
     border-radius: 50%;
     margin-top:5px;
   }
-}  label {
+}
+  label {
     margin-bottom: 1em;
 		color: #003e7c;
 		text-align: left;

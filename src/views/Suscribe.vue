@@ -3,7 +3,7 @@
 		<ModalView @close="toggleModal" :modalActive="modalActive">
 			<div class="modal-content">
 				<h1 class="title">Inscription réussie !</h1>
-				<p>Merci de vérifier votre adresse mail avant de vous connecter </p>
+				<p>Un mail de vérification vient de vous être envoyé. Une fois votre mail confirmé, vous pourrez vous connecter...</p>
 			</div>
 		</ModalView>
 		<!-- <button @click="this.toggleModal">ouvrir</button> -->
@@ -183,10 +183,6 @@
 				<p>Message : {{this.errorMessage}}</p>
 				
       </div>
-      <div class="success" v-if="this.success.suscribeSuccessfull" style="font-weight: bold; margin-bottom: 1em; text-align: center;">
-				Félicitation, vous êtes à présent enregistré sur notre site.
-				Vous pouvez dès à présent vous connecter sur la <router-link :to="{name : 'login'}" >page de connection</router-link> !
-      </div>
     </form>
 
   </section>
@@ -197,6 +193,7 @@
 	import ModalView from "@/components/Modal.vue";
 	import SpinnerCpnt from "@/components/SpinnerCpnt.vue";
 	import {ref} from 'vue'
+  import router from '@/router'
   //import storage     from "@/utils/storage";
 	// import { useVuelidate } from '@vuelidate/core'
 	// import { required, email } from '@vuelidate/validators'
@@ -211,10 +208,15 @@
 		},
 		
 		setup(){
-			const modalActive = ref(false);
-			const toggleModal = () => {
-				modalActive.value = !modalActive.value;
-			}
+			const modalActive = ref(true);
+      
+      const toggleModal = () => {
+        modalActive.value = !modalActive.value;
+        if (! modalActive.value){
+          setTimeout(()=>{
+          router.push({name: 'login'})}, 150)
+        }
+      }
 			return { modalActive, toggleModal }
 		},
 		
@@ -352,16 +354,15 @@
 
 						this.awaiting = true;
 						// Envoie de la requette à l'endpoint users pour création du nouvel utilisateur
-						let data = await userService.suscribe( this.email, this.username, this.password );
-						//console.log(this.email, this.username, this.first_name, this.last_name, this.password)
+            let data = await userService.suscribe( this.email, this.username, this.password );
+            //console.log(this.email, this.username, this.first_name, this.last_name, this.password)
 						//console.log(data);
 						
 						if (data.success == 1){
-							this.success.suscribeSuccessfull = true;
-							this.email          = "";
-							this.username       = "" ;
-							this.password       = "" ;
-							this.passwordVerify = "";
+							// this.email          = "";
+							// this.username       = "" ;
+							// this.password       = "" ;
+							// this.passwordVerify = "";
 							this.toggleModal();
 							this.awaiting = false;
 
@@ -502,7 +503,7 @@ form {
 	.error{
 		color : rgb(133, 0, 0);
 		font-weight: bold;
-		margin-bottom: 1em;
+		margin-bottom: 2.3em;
 		text-align: center;
 	}
 	.success{

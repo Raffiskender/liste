@@ -211,6 +211,7 @@ h2 {
   font-size: 2em;
   font-weight: bold;
   text-transform: uppercase;
+  color:blueviolet;
 }
 
 form {

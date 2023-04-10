@@ -55,7 +55,30 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h1{
-	text-align: center;
-}
+  h1, h2, h3, p, ul, li{
+    font-family: 'quicksand', Arial, Helvetica, sans-serif;
+    color:blueviolet;
+  }
+
+	h1 {
+    text-align: center;
+    padding-top: 1em;
+    font-size: 2em;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  p {
+    font-size:1.2em;
+    font-family:'Quicksand', Arial, Helvetica, sans-serif ;
+    color:rgb(0, 89, 255);
+    margin : 0.5em 1em;
+    // overflow: hidden;
+    line-height: 1.3em;
+    word-wrap:break-word;
+
+  }
+  .link{
+      cursor: pointer
+    }
 </style>

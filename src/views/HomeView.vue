@@ -40,7 +40,7 @@
         </li> -->
         </ul>
 			<p class="title last" style="font-weight: bold;">
-				Pour commencer il faut <router-link :to="{name : 'login'}">vous connecter</router-link> ou  <router-link :to="{name : 'suscribe'}">créer un compte</router-link>.
+				Pour commencer il faut <router-link :to="{name : 'login'}">vous connecter</router-link> ou  <router-link :to="{name : 'subscribe'}">créer un compte</router-link>.
 			</p>
 		</div>
 		<div v-if="isConnected">

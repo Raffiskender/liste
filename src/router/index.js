@@ -13,9 +13,9 @@ const routes = [
     component: () => import('@/views/Login.vue')
   },
   {
-    path: '/suscribe',
-    name: 'suscribe',
-    component: () => import('@/views/Suscribe.vue')
+    path: '/subscribe',
+    name: 'subscribe',
+    component: () => import('@/views/Subscribe.vue')
   },
   {
     path: '/list',

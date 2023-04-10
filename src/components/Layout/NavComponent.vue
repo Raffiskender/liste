@@ -21,7 +21,7 @@
 					Connexion
 				</router-link>
 				
-        <router-link :to="{name : 'suscribe'}" 
+        <router-link :to="{name : 'subscribe'}" 
           v-if="!isConnected"
           class="li">
 					Inscription

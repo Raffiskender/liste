@@ -178,7 +178,7 @@
         <span v-if="!this.awaiting">S'inscrire</span>
 				<SpinnerCpnt v-else />
       </button>
-      <div class="error" v-if="this.errors.suscribeFailed">
+      <div class="error" v-if="this.errors.subscribeFailed">
 				<p>Il y eu un pb lors de votre enregistrement</p>
 				<p>Message : {{this.errorMessage}}</p>
 				
@@ -200,7 +200,7 @@
 	
   export default 
   {
-    name: "LoginView",
+    name: "SubscribeView",
 		
 		components: {
 			ModalView,
@@ -208,7 +208,7 @@
 		},
 		
 		setup(){
-			const modalActive = ref(true);
+			const modalActive = ref(false);
       
       const toggleModal = () => {
         modalActive.value = !modalActive.value;
@@ -234,7 +234,7 @@
 				seePwdVerif:false,
 				awaiting:false,
         errors : {
-					suscribeFailed: false,
+					subscribeFailed: false,
           emailEmpty: false,
           usernameEmpty: false,
           fisrt_nameEmpty: false,
@@ -246,7 +246,7 @@
 					invalidPassword: false,
 				},
         success : {
-					suscribeSuccessfull: false,
+					subscribeSuccessfull: false,
         },
 				errorMessage:'',
 				regMail:/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -330,7 +330,7 @@
 			
 			async handleFormSubmit()
 			{
-				this.errors.suscribeFailed = false;
+				this.errors.subscribeFailed = false;
 				this.errors.invalidMail = false;
 				this.errors.invalidPassword = false;
 				
@@ -354,7 +354,7 @@
 
 						this.awaiting = true;
 						// Envoie de la requette à l'endpoint users pour création du nouvel utilisateur
-            let data = await userService.suscribe( this.email, this.username, this.password );
+            let data = await userService.subscribe( this.email, this.username, this.password );
             //console.log(this.email, this.username, this.first_name, this.last_name, this.password)
 						//console.log(data);
 						
@@ -370,7 +370,7 @@
 					
 						else{
 							this.errorMessage = data.response.message;
-							this.errors.suscribeFailed = true;
+							this.errors.subscribeFailed = true;
 							this.awaiting = false;
 						}
 					}
@@ -391,6 +391,7 @@ h2 {
   font-size: 2em;
   font-weight: bold;
   text-transform: uppercase;
+  color:blueviolet;
 }
 
 form {

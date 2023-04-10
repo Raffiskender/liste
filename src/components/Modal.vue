@@ -2,12 +2,14 @@
 	
 	<Transition name="modal-animation">
 		<div v-show="modalActive" class="modale">
-			<transition name="modal-inner-animation">
-				<div v-show="modalActive" class="modal-inner">
-					<font-awesome-icon class="close-btn"  @click="close" icon="fa-regular fa-circle-xmark" />
+			<transition name="modal-frame-animation">
+        <div v-show="modalActive" class="modal-frame">
+          <font-awesome-icon class="close-btn"  @click="close" icon="fa-regular fa-circle-xmark" />
+          <h1>{{ title }}</h1>
+          <div class="modal-content">
             <slot>
-            </slot>
-					<button @click="close">Fermer</button> 
+            </slot> 
+          </div>
 				</div>
 			</transition>
 		</div>
@@ -18,30 +20,26 @@
 <script>
 export default {
 	name : 'ModalView',
-	props : ["modalActive"],
-	
-	setup(props, {emit}) {
+	props : {
+    modalActive : Boolean,
+    title: String,
+    },
+
+  setup(props, {emit}) {
 		const close = () => {
 			emit("close");
 		}
-			return { close }
+    
+    return { 
+      close,
+    }
 	}
 }
 </script>
 
 <style lang="scss" scoped>
 /*Modale annimation*/
-.modale{
-	background: rgba(136, 136, 136, 0.9);
-	width: 100%;
-	max-width: 450px;
-	height: 100vh;
-	position: fixed;
-	z-index: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
+
 .modal-animation-enter-from,
 .modal-animation-leave-to{
 	opacity: 0;
@@ -56,68 +54,80 @@ export default {
 
 /*Modal inner animation*/
 
-.modal-inner-animation-enter-from, .modal-inner-animation-leave-to{
+.modal-frame-animation-enter-from, .modal-frame-animation-leave-to{
 	opacity: 0;
 	transform: scale(0);
 }
-.modal-inner-animation-enter-active, .modal-inner-animation-leave-active{
+.modal-frame-animation-enter-active, .modal-frame-animation-leave-active{
 	transition: all 0.3s cubic-bezier(0.52, -0.02, 0.19, 1.02);
-	
 }
 
-.modal-inner{
-	height: auto;
-	width: 80%;
-	//max-width: 680px;
-	
-	background:#e5e5e5;
-	
-	border-radius: 1em;
-	padding: 1em;
-  margin:3em;
+/*modal mise en forme*/
+.modale{  
+  position:fixed;
+  top:0;
+  left: 00;
+	background: rgba(140, 140, 140, 0.75);
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	z-index: 1;
 	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	>.close-btn{
-    position:relative;
-    top:0;
-    right: 0;
-    //align-self: flex-end;
-		width: 1.5em;
-		height: 1.5em;
-		color:blueviolet;
-		&:hover{
-			color:lighten( blueviolet, 15%);
-			cursor:pointer;
-		}
+	justify-content: center;
+	align-items: center;
+  
+}
+.modal-frame{
+  //border : dashed red 2px;
+  position: relative;
+	width: 80%;
+	min-width: 230px;
+  max-width: 350px;
+	max-height: 80vh;
+  overflow: visible;
+  
+	background:#e5e5e5;
+	border-top-left-radius: 1em;
+  border-bottom-left-radius: 1em;
+  border-bottom-right-radius: 1em;
+  box-sizing:border-box;
+	padding: 1em;
+  padding-top:0em;
+  margin: 3em;
 }
 
-	button{
-		margin: 0.5em auto;
-		display: block;
-		padding: 0.5em 1em;
-		background: blueviolet;
-		border-radius: 0.3em;
-		border:none;
-		color : rgb(255, 255, 255);
-    font-size: 1.2em;
-		transition: 0.2s ease;
-		>a{
-			color : white;
-			text-decoration: none;
-			&:visited{
-				color : white;
-			}
-		}
-		&:hover{
-			background: lighten(blueviolet, 15%);
-			cursor:pointer;
-		}
-	}
-	
-
+h1{
+  margin-top:0.5em;
+  font-size: 1.5em;
+  //border:dashed 2px red;
+  text-align:center;
 }
+.close-btn{
 
-
-
+  margin: auto;
+  position: absolute;
+  right: -17px;
+  top: -17px;
+  text-align: center;
+  border: none;
+  border-radius: 0.75em;
+  padding: 0.25em;
+  background-color: #e5e5e5;
+  color: blueviolet;
+  font-size: 1.7em;
+  transition: color 0.5s ease;
+  &:hover{
+    color: lighten(blueviolet, 15%);
+    cursor:pointer;
+  }
+}
+.modal-content{
+  //border: 2px dashed red;
+  max-height: calc(80vh - 7.5em);
+  overflow-y: auto;
+  //FireFox
+  scrollbar-width: none;
+  //Edge
+  -ms-overflow-style: none;
+}
 </style>

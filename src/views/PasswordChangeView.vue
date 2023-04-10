@@ -1,142 +1,45 @@
 <template>
 	<h1>Réinitialisation du mot de passe</h1>
-    <form @submit.prevent="this.handleFormSubmit">
-      <label>
-        Mot de passe
-				<input
-					:class="['pwdInput', isPasswordValid()]"
-					:type="[this.pwdInputType()]"
-					name="password"
-					v-model="this.password"
-					@focus="this.handleFocusPasswordInput"
-					@blur="this.handleBlurPasswordInput"/>
-				
-				
-				<font-awesome-icon
-					icon="fa-solid fa-eye"
-					class="eye"
-					@click="this.handleSeePwd()"
-					v-bind:class="{'hide': this.seePwd}"
-					alt=""
-					width="16" />	
-					
-				<font-awesome-icon
-					icon="fa-solid fa-eye-slash"
-					class="eye"
-					@click="this.handleSeePwd()"
-					v-bind:class="{'hide': !this.seePwd}"
-					alt=""
-					width="16" />	
-
-				<div>
-					<ul>Doit contenir
-						<div
-						:class="[isNumberOfCaracteresValid()]">
-							<font-awesome-icon	
-								icon="fa-regular fa-circle-check"
-								v-bind:class="{'hide': isNumberOfCaracteresValid()=='has-error' || this.password == ''}"
-								/>
-							<font-awesome-icon
-								icon="fa-regular fa-circle-xmark"
-								v-bind:class="{'hide': isNumberOfCaracteresValid()=='has-success'}"
-								/>
-							<li>entre 8 et 22 caractères,</li>
-						</div>
-						<div 
-						:class="[isCapitilizeCaractereValid()]">
-							<font-awesome-icon	
-								icon="fa-regular fa-circle-check"
-								v-bind:class="{'hide': isCapitilizeCaractereValid()=='has-error' || this.password == ''}"
-								style="color:green" />
-							<font-awesome-icon
-								icon="fa-regular fa-circle-xmark"
-								v-bind:class="{'hide': isCapitilizeCaractereValid()=='has-success'}"
-								style="color:red" />
-							<li :class="[isCapitilizeCaractereValid()]">une majuscule,</li>
-						</div>
-						<div :class ="[isMinimizeCaractereValid()]">
-							<font-awesome-icon	
-								icon="fa-regular fa-circle-check"
-								v-bind:class="{'hide': isMinimizeCaractereValid()=='has-error' || this.password == ''}"
-								style="color:green" />
-							<font-awesome-icon
-								icon="fa-regular fa-circle-xmark"
-								v-bind:class="{'hide': isMinimizeCaractereValid()=='has-success'}"
-								style="color:red" />
-							<li :class="[isMinimizeCaractereValid()]">une minuscule</li>
-						</div>
-						<div :class ="[isNumberValid()]">
-							<font-awesome-icon	
-								icon="fa-regular fa-circle-check"
-								v-bind:class="{'hide': isNumberValid()=='has-error' || this.password == ''}"
-								style="color:green" />
-							<font-awesome-icon
-								icon="fa-regular fa-circle-xmark"
-								v-bind:class="{'hide': isNumberValid()=='has-success'}"
-								style="color:red" />
-							<li :class="[isNumberValid()]">un chiffre</li>
-						</div>
-						<div :class="[isSpecialCaractereValid()]">
-							<font-awesome-icon	
-								icon="fa-regular fa-circle-check"
-								v-bind:class="{'hide': isSpecialCaractereValid()=='has-error' || this.password == ''}"
-								style="color:green" />
-							<font-awesome-icon
-								icon="fa-regular fa-circle-xmark"
-								v-bind:class="{'hide': isSpecialCaractereValid()=='has-success'}"
-								style="color:red" />
-							<li :class="[isSpecialCaractereValid()]">un caractère spécial</li>
-						</div>
-					</ul>
-				</div>
-        <div class="error" v-if="this.errors.passwordEmpty">
-          Vous devez saisir un mot de passe !
-        </div>
-        <div class="error" v-if="this.errors.invalidPassword && !this.errors.passwordEmpty">
-          Votre mot de passe n'est pas assez fort !
-        </div>
-      </label>
-			
-      <label>
-        Vérification du mot de passe
-        <input
-					:class="['pwdInput', isPasswordValidationOk()]"
-					:type="[this.pwdVerifInputType()]"
-					name="passwordVerify"
-					@blur="this.handleBlurPwdVerif()"
-					v-model="this.passwordVerify" />
-					
-				<font-awesome-icon
-					icon="fa-solid fa-eye"
-					class="eye"
-					v-bind:class="{'hide': this.seePwdVerif}"
-					@click="this.handleSeePwdVerif()"
-					alt=""
-					width="16" />	
-				
-				<font-awesome-icon
-					icon="fa-solid fa-eye-slash"
-					class="eye"
-					v-bind:class="{'hide': !this.seePwdVerif}"
-					@click="this.handleSeePwdVerif()"
-					alt=""
-					width="16" />	
-				
-        <div class="error" v-if="this.errors.passwordVerifyEmpty">
+    <form @submit.prevent="handleFormSubmit()">
+      <InputPassword
+        title="Mot de passe"
+        :theClass="passwordCheck.isPasswordValid()"
+        @new-value="check($event)"
+        name="password"
+      />
+      <div class="error" v-if="errors.passwordEmpty">
+        Vous devez saisir un mot de passe !
+      </div>
+      <div class="error" v-if="errors.invalidPassword && !errors.passwordEmpty">
+        Votre mot de passe n'est pas assez fort !
+      </div>
+      
+			<div>
+        <PasswordCheckView/>
+      </div>
+      
+      
+      <InputPassword
+        title="Confirmez"
+        :theClass="passwordCheck.isPasswordValidationOk(passwordVerify)"
+        @new-value="recordPasswordValidation($event)"
+        name="password-validation"
+      />
+        <div class="error" v-if="errors.passwordVerifyEmpty">
           Vous devez saisir une deuxième fois votre mot de passe !
         </div>
-        <div class="error" v-if="this.errors.passwordsDoesNotMatch && !this.errors.passwordVerifyEmpty">
+        <div class="error" v-if="errors.passwordsDoesNotMatch && !errors.passwordVerifyEmpty">
           Les 2 mots de passe ne sont pas identiques !
         </div>
-      </label>
       
-      <button :disabled="this.password == '' || this.isPasswordValid() == 'has-error' || this.isPasswordValidationOk() == 'has-error'">
-        <span v-if="!this.awaiting">Réinitialiser</span>
+      <button :disabled="passwordCheck.password == '' || passwordCheck.isPasswordValid() == 'has-error' || passwordCheck.isPasswordValidationOk(passwordVerify) == 'has-error'">
+        <span v-if="!awaiting">Réinitialiser</span>
         <SpinnerCpnt v-else />
       </button>
-      <div class="error" v-if="this.errors.sendingFailed">
+      
+      <div class="error" v-if="errors.sendingFailed">
         <p>Il y eu un pb</p>
-        <p>Message : {{this.errorMessage}}</p>		
+        <p>Message : {{errorMessage}}</p>		
       </div>
       <div class="success" v-if="this.success" style="font-weight: bold; margin-bottom: 1em; text-align: center;">
         Votre mot de passe vient d'être remplacé. Vous pouvez aller <router-link :to="{name : 'login'}" >vous connecter</router-link> !
@@ -145,142 +48,84 @@
 </template>
 
 <script>
-import { userService } from '@/services/userService';
-//import LoadingVue from '@/components/Layout/Loading.vue';
-import SpinnerCpnt from '@/components/SpinnerCpnt.vue';
+  export default{
+    name : 'PasswordChange',
+  }
+</script>
+  
+<script setup>
+  import { userService } from '@/services/userService';
+  //import LoadingVue from '@/components/Layout/Loading.vue';
+  import SpinnerCpnt from '@/components/SpinnerCpnt.vue';
+  import PasswordCheckView from '@/components/PasswordCheckView.vue';
+  import InputPassword from '@/components/InputPassword.vue';
+  import { usePasswordCheckStore } from '@/stores/PasswordChecking';
+  import {ref} from 'vue'
+  //import router from '@/router'
+  import { useRoute } from 'vue-router'
 
-export default {
-	name : 'PasswordChange',
-	components : {
-    SpinnerCpnt,
-  },
   
-	data(){
-		return{
-      seePwd:false,
-      seePwdVerif: false,
-      password: "",
-      passwordVerify:'',
-      regPassword : /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(^.{8,22}$)/,
-			regNumberOfCaracteres:/(^.{8,22}$)/,
-			regSpecialCaractere:/(?=.*[^A-Za-z0-9])/,
-			regCapitilizeCaractere: /(?=.*[A-Z])/,
-			regMinimizeCaractere:/(?=.*[a-z])/,
-			regNumber: /(?=.*[0-9])/,
-      
-      errors : {
-        passwordEmpty: false,
-        passwordVerifyEmpty: false, 
-        invalidPassword:false,
-        sendingFailed:false,
-        passwordsDoesNotMatch:false,
-			},
-      awaiting:false,
-      errorMessage:'',
-      success:false,
-      
-      userId :this.$route.query['user'],
-			userKey :this.$route.query['key'],
-      
-		}
-	},
-		
-	methods:{
-      handleSeePwd(){
-				this.seePwd = !this.seePwd;
-				this.passwordfocus = true;
-			},
-			handleSeePwdVerif(){
-				this.seePwdVerif = !this.seePwdVerif;
-			},
-					
-			handleBlurPwdVerif(){
-				this.seePwdVerif=false;
-			},
-						
-			pwdVerifInputType(){
-				return (this.seePwdVerif) ? 'text' : 'password';
-			},
-			pwdInputType(){
-				return (this.seePwd) ? 'text' : 'password';
-			},
-			
-			isNumberOfCaracteresValid() {
-				return (this.password == "") ? "has-error" : (this.regNumberOfCaracteres.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-			isSpecialCaractereValid() {
-				return (this.password == "") ? "has-error" : (this.regSpecialCaractere.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-			isCapitilizeCaractereValid() {
-				return (this.password == "") ? "has-error" : (this.regCapitilizeCaractere.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-			isMinimizeCaractereValid() {
-				return (this.password == "") ? "has-error" : (this.regMinimizeCaractere.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-			isNumberValid() {
-				return (this.password == "") ? "has-error" : (this.regNumber.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-					
-			isPasswordValid() {
-				return (this.password == "") ? "has-error" : (this.regPassword.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-			isPasswordValidationOk() {
-				if (this.passwordVerify!="" && this.regPassword.test(this.password)){
-					return (this.password == this.passwordVerify) ? 'has-success' : 'has-error';
-				}
-			},
-					
-			handleFocusPasswordInput(){
-				this.errors.invalidPassword=false;
-				this.passwordfocus = true;
-			},
-			handleBlurPasswordInput(){
-				this.seePwd = false;
-				this.passwordfocus = false;
-			},
+  const passwordCheck = usePasswordCheckStore()
+
+  // const password = ref('')
+  const passwordVerify = ref('')
   
-    async handleFormSubmit() {
+  const errors = ref({
+    passwordEmpty : ref(false),
+    passwordVerifyEmpty : ref(false), 
+    invalidPassword : ref(false),
+    sendingFailed : ref(false),
+    passwordsDoesNotMatch : ref(false)
+  })
+  
+  const awaiting = ref(false)
+  const errorMessage = ref('')
+  const success = ref(false)
+  
+  const route = useRoute()
+  const userId = ref(route.query['user'])
+  const userKey = ref(route.query['key'])
+  
+  const check = (value) => {
+      passwordCheck.updatePassword(value)
+  }
+  
+  const recordPasswordValidation = (value) => {
+    passwordVerify.value = value
+  }
+  const handleFormSubmit = async() => {
       //* Errors reinitialisation...
-      this.errors.passwordEmpty = false;
-      this.errors.passwordVerifyEmpty = false;
-      this.errors.invalidPassword = false;
-      this.sendingFailed = false;
-      this.errorMessage = '';
-      this.success = false;
+      errors.value.passwordEmpty = false
+      errors.value.passwordVerifyEmpty = false
+      errors.value.invalidPassword = false
+      errors.value.sendingFailed = false;
+      errorMessage.value = '';
+      success.value = false;
       
       //* Now come the verifications 
-      this.errors.passwordEmpty = (this.password == '')
-      this.errors.passwordVerifyEmpty = (this.passwordVerify == '')
-      this.errors.invalidPassword = ( !this.regPassword.test(this.password) );
-      this.errors.passwordsDoesNotMatch = (this.password != this.passwordVerify)
-      
-      if (!this.errors.passwordEmpty && !this.errors.passwordVerifyEmpty && !this.errors.invalidPassword){
-        const response = await userService.passwordReset(this.password, this.userKey, this.userId);
-        console.log('ici c\'est passé')
+      errors.value.passwordEmpty = (passwordCheck.password == '')
+      errors.value.passwordVerifyEmpty = (passwordVerify.value == '')
+      errors.value.invalidPassword = ( !passwordCheck.regPassword.test(passwordCheck.password) );
+      errors.value.passwordsDoesNotMatch = (passwordCheck.password != passwordVerify.value)
+      if (!errors.value.passwordEmpty && !errors.value.passwordVerifyEmpty && !errors.value.invalidPassword){
+        awaiting.value = true
+        const response = await userService.passwordReset(passwordCheck.password, userKey.value, userId.value);
+        //console.log('ici c\'est passé')
         //* If we have a message, it means we have an error...
         
         if (response.success == 1){
-          this.success = true;
-          this.email   = "";
-          this.awaiting = false;
-          this.errors.sendingFailed = false;
+          success.value = true
+          awaiting.value = false
         }
         else {
-          this.errorMessage = response.response;
-          this.errors.sendingFailed = true;
-          this.awaiting = false;
-          this.success = false;
+          errorMessage.value = response.response;
+          errors.value.sendingFailed = true;
+          awaiting.value = false;
+          success.value = false;
         }
       }
     }
-	}
-}
+	
 
 </script>
 

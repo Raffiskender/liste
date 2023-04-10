@@ -108,11 +108,6 @@ export default
   },
   mounted() {
     this.resize()
-    // document.querySelector('.tab').addEventListener('scroll', () => {
-    //     let timer
-    //     clearTimeout(timer);
-    //     timer = setTimeout( this.disableAnArrow() , 150 );
-    // });
     document.querySelector('.tab').addEventListener("scroll", this.disableAnArrow );
     this.disableAnArrow()
     setTimeout( () => {
@@ -296,14 +291,11 @@ export default
     },
 
     resize(){
-      const container = document.querySelector(".container");
-      const tab = document.querySelector(".tab");
-      const rightButtons = document.querySelector('.right-side')
-      // console.log("container : " + container.clientWidth)
-      // console.log("Buttons : " + rightButtons.clientWidth)
-      // console.log("tab : " + tab.scrollWidth)
       
-      
+      const container = document.querySelector(".container") ? document.querySelector(".container") : ''
+      const tab = document.querySelector(".tab") ? document.querySelector(".tab"): ''
+      const rightButtons = document.querySelector('.right-side') ? document.querySelector('.right-side') : ''      
+      if (container)
       this.showArrow = (container.scrollWidth - rightButtons.scrollWidth) >= tab.scrollWidth ?  0 : 1
     },
     

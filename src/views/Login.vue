@@ -175,8 +175,8 @@
             // this.$emit( "user-connected" );
             // VueX : Plus besoin de s'embeter a faire remonter des events
             this.userStore.userConnection();
-            this.userStore.createUser(data)
-						this.awaiting = false
+            this.awaiting = false
+            this.userStore.createUser(await userService.getUserInfos())
 						
 						//console.log("connecté");
             // Redirection vers la home

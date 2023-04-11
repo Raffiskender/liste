@@ -1,4 +1,22 @@
 <template>
+  <Modal @close = "toggleChangeLastNameModal()" :modalActive="showChangeLastNameModal"
+  title="Modifier votre nom">
+    <form @submit.prevent="handleChangeUserLastName()">
+      <input
+        type="text" 
+        id="name"
+        v-model="lastName"
+        placeholder="Entrez votre nom">
+      <div class="modale-buttons">
+        <button>
+          <span v-if="!awaiting">Changer</span>
+          <SpinnerCpnt v-else />
+        </button>
+        <button @click.prevent="toggleChangeLastNameModal()">Annuler</button>
+      </div>
+      
+    </form>
+  </Modal>
   <Modal @close="closeChangePasswordModal" :modalActive="showChangePasswordModal"
     title='Modifiez votre mot de passe'>
     <div class="modal-content">
@@ -113,13 +131,12 @@
         <p>Identifiant : <br><span class="unchangeable">{{ userStore.user['username'] }}</span></p>
         <!-- <p>Nom d'affichage :  <br>{{ userStore.user['slug'] }}</p> -->
         <p>E-mail : <br><span class="unchangeable">{{ userStore.user['email'] }}</span></p>
-        <p>Nom :  <br><span v-if="userStore.user['last_name'] != ''">{{ userStore.user['last_name'] }}</span><span v-else class="link">non défini</span></p>
+        <p>Nom d'affichage : <br>
+          <span @click="toggleChangeLastNameModal()" v-if="userStore.user.name != ''">{{ userStore.user.name }}</span>
+          <span @click="toggleChangeLastNameModal()" v-else class="link">non défini</span>
+        </p>
 
-        <!-- <form v-else>
-        <label for="name">Vous pouvez entrer votre nom</label> -->
-        <!-- <input type="text">
-        </form> -->
-        <p>Prénom :  <br><span v-if="userStore.user['first_name'] != ''">{{ userStore.user['first_name'] }}</span><span v-else class="link">non défini</span></p>
+        <!-- <p>Prénom :  <br><span v-if="userStore.user['first_name'] != ''">{{ userStore.user['first_name'] }}</span><span v-else class="link">non défini</span></p> -->
         
         <p>
           <span class="link"
@@ -168,38 +185,24 @@
   import { ref, onBeforeMount } from 'vue'
   import router from '@/router'
   
-  const userStore = useUserStore()
-  const passwordCheck = usePasswordCheckStore()
-  const passwordVerify = ref('')
-  const currentPassword = ref('')
-  const errors = ref({    
-    currentPasswordEmpty : ref(false),
-    passwordEmpty : ref(false),
-    passwordVerifyEmpty : ref(false), 
-    invalidPassword : ref(false),
-    passwordsDoesNotMatch : ref(false),
-    currentPasswordIsWrong : ref(false),
-  })
-  const awaiting = ref(false)
-  const errorMessage = ref('')
-  const date = ref(false)
-
   onBeforeMount(async() => {
     if ( await userService.isConnected() ){
-      userStore.createUser(await userService.getUserInfos())
-      //console.log(userStore.user)
       date.value = new Date(userStore.user['registered_date'])
     }
     else{
       router.push( {name: '403'})
     }
   })
+  const userStore = useUserStore()
+  const passwordCheck = usePasswordCheckStore()
+  
+  const date = ref(false)
   
   const getReadableMonth = () => {
-      switch (date.value.getMonth()) {
-        case 1 : {
-          return 'janvier'
-        }
+    switch (date.value.getMonth()) {
+      case 1 : {
+        return 'janvier'
+      }
         case 2 : {
           return 'février'
         }
@@ -237,131 +240,165 @@
           return 'mois'
         }
       }
-    }
+  }
+  
+  const showChangeLastNameModal = ref(false)
+  const toggleChangeLastNameModal = () => {
+    showChangeLastNameModal.value = !showChangeLastNameModal.value;
+  }
+  const lastName=ref('')
+  const handleChangeUserLastName = async() => {
+    if (lastName.value != ''){
+      awaiting.value = true
+      const data = await userService.changeUserLastName(lastName.value)
 
-    const showChangePasswordModal = ref(false)
-    const closeChangePasswordModal = () => {
-      toggleChangePasswordModal()
-      let allInputs = document.querySelectorAll('input')
-      for (const input of allInputs){
-        input.value = ''
+      if(data.success == '1'){
+        toggleChangeLastNameModal()
+        userStore.changeUserLastName(lastName.value)
+        awaiting.value = false
+        lastName.value = ''
       }
-      passwordCheck.password = '';
     }
-    
-    const toggleChangePasswordModal = () => {
-      showChangePasswordModal.value = !showChangePasswordModal.value;
+  }
+  
+  const showChangePasswordModal = ref(false)
+  const closeChangePasswordModal = () => {
+    toggleChangePasswordModal()
+    let allInputs = document.querySelectorAll('input')
+    for (const input of allInputs){
+      input.value = ''
     }
+    passwordCheck.password = '';
+  }
+  
+  const toggleChangePasswordModal = () => {
+    showChangePasswordModal.value = !showChangePasswordModal.value;
+  }
+  
+  
+  const check = (value) => {
+    passwordCheck.updatePassword(value)
+  }
+  
+  const recordPasswordValidation = (value) => {
+    passwordVerify.value = value
+  }
+  
+  const recordCurrentPwd = (value) => {
+    currentPassword.value = value
+  }
+  
+  const passwordVerify = ref('')
+  const currentPassword = ref('')
+  const errors = ref({    
+    currentPasswordEmpty : ref(false),
+    passwordEmpty : ref(false),
+    passwordVerifyEmpty : ref(false), 
+    invalidPassword : ref(false),
+    passwordsDoesNotMatch : ref(false),
+    currentPasswordIsWrong : ref(false),
+  })
+  const awaiting = ref(false)
+  const errorMessage = ref('')
+  
+  const showChangePasswordIsValidate = ref(false)
+  const toggleChangePasswordIsValidateModal = () =>{
+    showChangePasswordIsValidate.value = !showChangePasswordIsValidate.value;
+  }
+  
+  
+  const handleChangePassword = async () => {
+    errors.value.invalidPassword = false;
+    errors.value.currentPasswordIsWrong = false
     
-    
-    const check = (value) => {
-      passwordCheck.updatePassword(value)
-    }
-    
-    const recordPasswordValidation = (value) => {
-      passwordVerify.value = value
-    }
-    
-    const recordCurrentPwd = (value) => {
-      currentPassword.value = value
-    }
-    
-    const showChangePasswordIsValidate = ref(false)
-    const toggleChangePasswordIsValidateModal = () =>{
-      showChangePasswordIsValidate.value = !showChangePasswordIsValidate.value;
-    }
-    
-    const showDeleteAccountModal = ref(false)
-    const toggleDeleteAccountModal = () =>{
-      showDeleteAccountModal.value = !showDeleteAccountModal.value;
-      deleteConfirme.value = false;
-    }
-    
-    const deleteConfirme = ref(false)
-    const toggleDeleteConfirme = () => {
-      deleteConfirme.value = !deleteConfirme.value;
-      //console.log(deleteConfirme.value)
-    }
-    
-    const userWasDeleted = ref(false);
-    const errorMessageForDeleteAccount = ref(false)
-    const deleteAccount = async() => {
-      errorMessageForDeleteAccount.value = false
-      if (deleteConfirme.value){
-        const data = await userService.deleteAccount()
-        
-        if (data.success === 1){
-          userWasDeleted.value = true
+    // --- Vérification des données du formulaire --- //
+    // En version raccourcie : on stocke le résultat de la condition dans la variable
+
+    errors.value.currentPasswordEmpty  = ( currentPassword.value == "" );
+    errors.value.passwordEmpty  = ( passwordCheck.password == "" );
+    errors.value.passwordsDoesNotMatch = ( passwordCheck.password != passwordVerify.value )
+    errors.value.invalidPassword = ( !passwordCheck.regPassword.test(passwordCheck.password) );
+          
+    // Si une erreur est rencontrée, on n'envoi pas la requete au serveur !
+    if( !errors.value.currentPasswordEmpty &&
+        !errors.value.passwordEmpty &&
+        !errors.value.passwordVerifyEmpty &&
+        !errors.value.passwordsDoesNotMatch &&
+        !errors.value.invalidPassword)
+    {
+
+      awaiting.value = true;
+
+      const data = await userService.passwordResetFromProfil( currentPassword.value, passwordCheck.password )
+      
+      if (data.success == 1){
+        toggleChangePasswordModal()
+        toggleChangePasswordIsValidateModal()
+        awaiting.value = false
+        errors.value.currentPasswordEmpty = false
+        errors.value.passwordEmpty = false
+        errors.value.passwordVerifyEmpty = false
+        errors.value.invalidPassword = false
+        errors.value.passwordsDoesNotMatch = false
+        errors.value.currentPasswordIsWrong = false
+        currentPassword.value = ''
+        passwordVerify.value = ''
+        passwordCheck.updatePassword('')
+        let allInputs = document.querySelectorAll('input')
+        for (const input of allInputs){
+          input.value = ''
         }
-        else{
-          errorMessageForDeleteAccount.value = 'Il y a eu une erreur. Message : ' + data.response.message
-        }
-        
+      }
+    
+      else{
+        awaiting.value = false
+        //console.log(data.response.message == 'Password is wrong')
+        if (data.response.message == 'Password is wrong')
+          errors.value.currentPasswordIsWrong = true
+        else
+        errorMessage.value = data.response.data.message          
+      }
+    }
+  }
+  
+  
+  const showDeleteAccountModal = ref(false)
+  const toggleDeleteAccountModal = () =>{
+    showDeleteAccountModal.value = !showDeleteAccountModal.value;
+    deleteConfirme.value = false;
+  }
+  
+  const deleteConfirme = ref(false)
+  const toggleDeleteConfirme = () => {
+    deleteConfirme.value = !deleteConfirme.value;
+    //console.log(deleteConfirme.value)
+  }
+  
+  const userWasDeleted = ref(false);
+  const errorMessageForDeleteAccount = ref(false)
+  const deleteAccount = async() => {
+    errorMessageForDeleteAccount.value = false
+    if (deleteConfirme.value){
+      const data = await userService.deleteAccount()
+      
+      if (data.success === 1){
+        userWasDeleted.value = true
       }
       else{
-        errorMessageForDeleteAccount.value = "Vous devez cocher la case"
+        errorMessageForDeleteAccount.value = 'Il y a eu une erreur. Message : ' + data.response.message
       }
+      
     }
-    const closeAndQuit = () => {
-      userStore.userDisconnection()
-          toggleDeleteAccountModal()
-          router.push({name: 'home'})
-
+    else{
+      errorMessageForDeleteAccount.value = "Vous devez cocher la case"
     }
+  }
+  const closeAndQuit = () => {
+    userStore.userDisconnection()
+        toggleDeleteAccountModal()
+        router.push({name: 'home'})
   
-    const handleChangePassword = async () => {
-      errors.value.invalidPassword = false;
-      errors.value.currentPasswordIsWrong = false
-      
-      // --- Vérification des données du formulaire --- //
-      // En version raccourcie : on stocke le résultat de la condition dans la variable
-
-      errors.value.currentPasswordEmpty  = ( currentPassword.value == "" );
-      errors.value.passwordEmpty  = ( passwordCheck.password == "" );
-      errors.value.passwordsDoesNotMatch = ( passwordCheck.password != passwordVerify.value )
-      errors.value.invalidPassword = ( !passwordCheck.regPassword.test(passwordCheck.password) );
-            
-      // Si une erreur est rencontrée, on n'envoi pas la requete au serveur !
-      if( !errors.value.currentPasswordEmpty &&
-          !errors.value.passwordEmpty &&
-          !errors.value.passwordVerifyEmpty &&
-          !errors.value.passwordsDoesNotMatch &&
-          !errors.value.invalidPassword)
-      {
-
-        awaiting.value = true;
-
-        const data = await userService.passwordResetFromProfil( currentPassword.value, passwordCheck.password )
-        
-        if (data.success == 1){
-          toggleChangePasswordModal()
-          toggleChangePasswordIsValidateModal()
-          awaiting.value = false
-          errors.value.currentPasswordEmpty = false
-          errors.value.passwordEmpty = false
-          errors.value.passwordVerifyEmpty = false
-          errors.value.invalidPassword = false
-          errors.value.passwordsDoesNotMatch = false
-          errors.value.currentPasswordIsWrong = false
-          currentPassword.value = ''
-          passwordVerify.value = ''
-          passwordCheck.updatePassword('')
-          let allInputs = document.querySelectorAll('input')
-          for (const input of allInputs){
-            input.value = ''
-          }
-        }
-      
-        else{
-          awaiting.value = false
-          //console.log(data.response.message == 'Password is wrong')
-          if (data.response.message == 'Password is wrong')
-            errors.value.currentPasswordIsWrong = true
-          else
-            errorMessage.value = data.response.data.message          
-        }
-      }
-    }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -466,6 +503,24 @@
   display: flex;
   align-items : center;
   justify-content: center;
+}
+
+input {
+  display: block;
+  margin: 1.2em 0;
+  width: 100%;
+  padding: 0.75em 1.5em;
+  background: #ffffff;;
+  border: none;
+  border-bottom: #00aeff 2px solid;
+  border-left:  #00aeff 2px solid;;
+  box-sizing: border-box;
+  &:hover{
+    background: #e0e0e0;;
+  }
+  &:focus{
+    background: #e0e0e0;;
+  }
 }
 .error {
   color : rgb(133, 0, 0);

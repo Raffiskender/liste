@@ -27,7 +27,9 @@ export const useUserStore = defineStore('User', {
     },
     createUser(data){
       this.user = data
+    },
+    changeUserLastName(lastName){
+      this.user.name = lastName
     }
-    
 	},
 })

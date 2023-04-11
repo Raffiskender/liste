@@ -8,9 +8,9 @@ export const userService =
     
     // Propriété qui stocke la BASE URL de notre API
     //
-    //base_url : "http://192.168.42.124/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
+    base_url : "http://192.168.42.124/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
     //base_url : "http://192.168.1.41/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
-    base_url : "https://listeback-v2.raffiskender.com/wp-json/",
+    //base_url : "https://listeback-v2.raffiskender.com/wp-json/",
     //base_url : "http://localhost/Projets_Vue/ListeDeCouseBackendV2/wordpress/wp-json/",
 
     success : '',
@@ -233,6 +233,42 @@ export const userService =
       this.success = 1;
       const response = await axios.delete( 
         this.base_url + "liste-de-course/v1/delete-user",
+        {
+          headers : {
+            Authorization : "Bearer " + userData.token
+          }
+        }).catch( (response) => {
+          // Ici, j'indique a JS quoi faire si la requete échoue (erreur réseau, etc)
+            //console.log(response.response.data.message);
+            this.success = 0;
+            return response
+          }
+        );
+      //console.log(this.success)
+      if (this.success == 1){
+        if (response.data == '1'){
+          return {
+            'success': 1,
+          }
+        }
+      }
+      else {
+        return {
+          'success': 0,
+          'response': response.response.data,
+        }  
+      }
+    },
+
+    async changeUserLastName(params){
+      const userData = storage.get( "userData" )
+      
+      this.success = 1;
+      const response = await axios.post( 
+        this.base_url + "liste-de-course/v1/changeLastName",
+        {
+          lastName :params,
+        },
         {
           headers : {
             Authorization : "Bearer " + userData.token

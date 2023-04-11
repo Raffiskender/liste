@@ -7,7 +7,7 @@
 				Ce projet est en cours de développement, et il commence à être assez aboutis.
 			</p>
 			<p>
-				Ceci est la version 2. Je me suis surtout attaché à avoir code propre, <a href = "https://github.com/Raffiskender" target="blank">(dispo ici)</a>, et à avoir une gestion des utilisateurs assez fine (sécurisation du front-end sur les formulaires, réinitialisation de mot de passe, token à expiration, activation de compte etc).
+				Ceci est la version 2. Je me suis surtout attaché à avoir code propre, <a href = "https://github.com/Raffiskender" target="blank">(dispo ici)</a>, et à avoir une gestion des utilisateurs assez fine (sécurisation du front-end sur les formulaires, réinitialisation de mot de passe, token à expiration, de compte etc).
 			</p>
 			<p class="title">Le projet (d'un mot)</p>
 			
@@ -44,48 +44,28 @@
 			</p>
 		</div>
 		<div v-if="isConnected">
-			<h3>Bonjour {{ getCurrentUsername() }} !</h3>
+			<h3>Bonjour {{ userStore.user.name }} !</h3>
       
 		</div>
 	</section>
 </template>
 
 <script>
-import { storage }      from '@/utils/storage';
+//import { storage }      from '@/utils/storage';
 import { storeToRefs }  from 'pinia';
 import { useUserStore } from '@/stores/User';
 
 export default {
 	name: 'HomeView',
   setup() {
-    const store = useUserStore();
-    const { isConnected } = storeToRefs(store);
+    const userStore = useUserStore();
+    const { isConnected } = storeToRefs(userStore);
     return {
-      store,
+      userStore,
       isConnected
     }
   },
-	methods:{
-    handleDisplayFootnote(event) {
-      const p = document.querySelector('.foot-note')
-      p.style.opacity = 1
-      p.style['z-index'] = 3;
-      p.style.left = "calc((100vw / 2) - 10em)"
-      p.style.top = "calc(" + event.clientY + "px - 13em)"
-    },
-    
-    handleHideFootnote(){
-      const p = document.querySelector('.foot-note')
-      //console.log(p);
-      p.style.opacity = 0;
-      p.style['z-index'] = -1;
-    },
-    
-		getCurrentUsername()
-			{
-				return storage.get( "userData" ).user_display_name;
-			},
-	}
+
 }
 </script>
 <style lang="scss" scoped>

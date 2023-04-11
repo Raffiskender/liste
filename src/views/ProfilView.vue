@@ -286,7 +286,6 @@
     const userWasDeleted = ref(false);
     const errorMessageForDeleteAccount = ref(false)
     const deleteAccount = async() => {
-      //console.log('coucou')
       errorMessageForDeleteAccount.value = false
       if (deleteConfirme.value){
         const data = await userService.deleteAccount()
@@ -311,7 +310,6 @@
     }
   
     const handleChangePassword = async () => {
-      console.log('coucou handleChangePassword')
       errors.value.invalidPassword = false;
       errors.value.currentPasswordIsWrong = false
       

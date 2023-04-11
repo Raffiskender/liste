@@ -70,6 +70,7 @@ export const userService =
     },
 
     async subscribe(eMail, login, password) {
+      console.log(eMail + ' ' + login + ' ' + password)
       this.success = 1;
       const response = await axios.post( 
         this.base_url + "liste-de-course/v1/create-user",

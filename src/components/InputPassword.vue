@@ -1,7 +1,7 @@
 <template>
     
   <label :for="name">
-  <p>{{ title }}</p>
+    <p>{{ title }}</p>
   </label>
     <input
     :type="inputType()"
@@ -11,6 +11,8 @@
       :placeholder="thePlaceHolder"
       @blur="seePwd = false"
       @input="updateValue($event.target.value)"
+      @focus="focusMe()"
+      
     >
     <span>
       <font-awesome-icon
@@ -38,6 +40,7 @@ export default{
   
   emits: {
     'newValue':null,
+    'focusMe' :null,
   },
   
   props: 
@@ -75,6 +78,9 @@ export default{
     
     updateValue(value) {
       this.$emit('newValue', value)
+    },
+    focusMe(){
+      this.$emit('focusMe')
     }
   },
 }
@@ -82,6 +88,7 @@ export default{
 
 <style lang="scss" scoped>
 label {
+  width:fit-content;
   font-size:1.2em;
 	font-family:'Quicksand', Arial, Helvetica, sans-serif ;
 	color:rgb(0, 89, 255);

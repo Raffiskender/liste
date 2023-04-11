@@ -9,178 +9,84 @@
 		<!-- <button @click="this.toggleModal">ouvrir</button> -->
 		
     <h2>S'enregistrer</h2>
-    <form @submit.prevent="this.handleFormSubmit">
-      <label>
-        Email
+    <form @submit.prevent="handleFormSubmit()">
+      <label for="email">
+        <p>Email</p>
+      </label>
         <input
+          id="email"
 					type="email"
 					name="Email"
-					v-model="this.email"
+					v-model="email"
 					placeholder="Email"
 					:class="[isEmailValid()]"
+          @focus="() => {errors.invalidMail = false ; errors.emailEmpty = false}"
 					required/>
-        <div class="error" v-if="this.errors.emailEmpty">
+        <div class="error" v-if="errors.emailEmpty">
           Vous devez saisir un mail !
         </div>
-				<div class="error" v-if="this.errors.invalidMail">
+				<div class="error" v-if="errors.invalidMail">
 					E-mail invalide !
 				</div>
-      </label>
 			
-      <label>
-        Identifiant
+      <label for="user-name">
+        <p>Identifiant</p>
+      </label>
         <input
+          id="user-name"
 					type="text"
 					name="username"
-					v-model="this.username"
+					v-model="username"
 					placeholder="Identifiant"
-					required/>
+					required
+          @focus="errors.usernameEmpty = false"/>
 					
-        <div class="error" v-if="this.errors.usernameEmpty">
+        <div class="error" v-if="errors.usernameEmpty">
           Vous devez saisir un login !
         </div>
-      </label>
 
-      <label>
-        Mot de passe
-				<input
-					:class="['pwdInput', isPasswordValid()]"
-					:type="[this.pwdInputType()]"
-					name="password"
-					v-model="this.password"
-					@focus="this.handleFocusPasswordInput"
-					@blur="this.handleBlurPasswordInput"/>
-				
-				
-				<font-awesome-icon
-					icon="fa-solid fa-eye"
-					class="eye"
-					@click="this.handleSeePwd()"
-					v-bind:class="{'hide': this.seePwd}"
-					alt=""
-					width="16" />	
-					
-				<font-awesome-icon
-					icon="fa-solid fa-eye-slash"
-					class="eye"
-					@click="this.handleSeePwd()"
-					v-bind:class="{'hide': !this.seePwd}"
-					alt=""
-					width="16" />	
+      <InputPassword
+        title="Mot de passe"
+        :theClass="passwordCheck.isPasswordValid()"
+        @new-value="check($event)"
+        name="password"
+        @focus-me="passwordInputFocused()"
+      />	
+      <div class="error" v-if="errors.passwordEmpty">
+        Vous devez saisir un mot de passe !
+      </div>
+      <div class="error" v-if="errors.invalidPassword">
+        Votre mot de passe n'est pas assez fort !
+      </div>
+      <PasswordCheckView />
 
-				<div>
-					<ul>Doit contenir
-						<div
-						:class="[isNumberOfCaracteresValid()]">
-							<font-awesome-icon	
-								icon="fa-regular fa-circle-check"
-								v-bind:class="{'hide': isNumberOfCaracteresValid()=='has-error' || this.password == ''}"
-								/>
-							<font-awesome-icon
-								icon="fa-regular fa-circle-xmark"
-								v-bind:class="{'hide': isNumberOfCaracteresValid()=='has-success'}"
-								/>
-							<li>entre 8 et 22 caractères,</li>
-						</div>
-						<div 
-						:class="[isCapitilizeCaractereValid()]">
-							<font-awesome-icon	
-								icon="fa-regular fa-circle-check"
-								v-bind:class="{'hide': isCapitilizeCaractereValid()=='has-error' || this.password == ''}"
-								style="color:green" />
-							<font-awesome-icon
-								icon="fa-regular fa-circle-xmark"
-								v-bind:class="{'hide': isCapitilizeCaractereValid()=='has-success'}"
-								style="color:red" />
-							<li :class="[isCapitilizeCaractereValid()]">une majuscule,</li>
-						</div>
-						<div :class ="[isMinimizeCaractereValid()]">
-							<font-awesome-icon	
-								icon="fa-regular fa-circle-check"
-								v-bind:class="{'hide': isMinimizeCaractereValid()=='has-error' || this.password == ''}"
-								style="color:green" />
-							<font-awesome-icon
-								icon="fa-regular fa-circle-xmark"
-								v-bind:class="{'hide': isMinimizeCaractereValid()=='has-success'}"
-								style="color:red" />
-							<li :class="[isMinimizeCaractereValid()]">une minuscule</li>
-						</div>
-						<div :class ="[isNumberValid()]">
-							<font-awesome-icon	
-								icon="fa-regular fa-circle-check"
-								v-bind:class="{'hide': isNumberValid()=='has-error' || this.password == ''}"
-								style="color:green" />
-							<font-awesome-icon
-								icon="fa-regular fa-circle-xmark"
-								v-bind:class="{'hide': isNumberValid()=='has-success'}"
-								style="color:red" />
-							<li :class="[isNumberValid()]">un chiffre</li>
-						</div>
-						<div :class="[isSpecialCaractereValid()]">
-							<font-awesome-icon	
-								icon="fa-regular fa-circle-check"
-								v-bind:class="{'hide': isSpecialCaractereValid()=='has-error' || this.password == ''}"
-								style="color:green" />
-							<font-awesome-icon
-								icon="fa-regular fa-circle-xmark"
-								v-bind:class="{'hide': isSpecialCaractereValid()=='has-success'}"
-								style="color:red" />
-							<li :class="[isSpecialCaractereValid()]">un caractère spécial</li>
-						</div>
-					</ul>
-				</div>
-        <div class="error" v-if="this.errors.passwordEmpty">
-          Vous devez saisir un mot de passe !
-        </div>
-        <div class="error" v-if="this.errors.invalidPassword">
-          Votre mot de passe n'est pas assez fort !
-        </div>
-      </label>
+			<InputPassword
+        title="Vérification du mot de passe"
+        :theClass="passwordCheck.isPasswordValidationOk(passwordVerify)"
+        @new-value="recordPasswordValidation($event)"
+        name="password-Validation"
+        @focus-me="passwordVerifyInputFocused()"
+      />
 			
-      <label>
-        Vérification du mot de passe
-        <input
-					:class="['pwdInput', isPasswordValidationOk()]"
-					:type="[this.pwdVerifInputType()]"
-					name="passwordVerify"
-					@blur="this.handleBlurPwdVerif()"
-					v-model="this.passwordVerify" />
-					
-				<font-awesome-icon
-					icon="fa-solid fa-eye"
-					class="eye"
-					v-bind:class="{'hide': this.seePwdVerif}"
-					@click="this.handleSeePwdVerif()"
-					alt=""
-					width="16" />	
-				
-				<font-awesome-icon
-					icon="fa-solid fa-eye-slash"
-					class="eye"
-					v-bind:class="{'hide': !this.seePwdVerif}"
-					@click="this.handleSeePwdVerif()"
-					alt=""
-					width="16" />	
-				
-        <div class="error" v-if="this.errors.passwordVerifyEmpty">
+
+        <div class="error" v-if="errors.passwordVerifyEmpty">
           Vous devez saisir une deuxième fois votre mot de passe !
         </div>
-        <div class="error" v-if="this.errors.passwordsDoesNotMatch">
+        <div class="error" v-if="errors.passwordsDoesNotMatch">
           Les 2 mots de passe ne sont pas identiques !
         </div>
-      </label>
 
-      <div class="error" v-if="this.errors.loginFailed">
+      <div class="error" v-if="errors.loginFailed">
         Identifiants incorrects
       </div>
 
-      <button :disabled="this.email == '' || this.username == '' || this.password == '' || this.passwordVerify == '' || this.awaiting">
-        <span v-if="!this.awaiting">S'inscrire</span>
+      <button :disabled="email == '' || username == '' || passwordCheck.password == '' || passwordVerify == '' || awaiting">
+        <span v-if="!awaiting">S'inscrire</span>
 				<SpinnerCpnt v-else />
       </button>
-      <div class="error" v-if="this.errors.subscribeFailed">
+      <div class="error" v-if="errors.subscribeFailed">
 				<p>Il y eu un pb lors de votre enregistrement</p>
-				<p>Message : {{this.errorMessage}}</p>
+				<p>Message : {{errorMessage}}</p>
 				
       </div>
     </form>
@@ -189,195 +95,121 @@
 </template>
 
 <script>
+export default{
+  name: "SubscribeView",
+}
+</script>
+
+<script setup>
   import {userService} from "@/services/userService";
 	import ModalView from "@/components/Modal.vue";
 	import SpinnerCpnt from "@/components/SpinnerCpnt.vue";
-	import {ref} from 'vue'
-  import router from '@/router'
+	import {ref} from 'vue';
+  import router from '@/router';
+  import InputPassword from "@/components/InputPassword.vue";
+  import PasswordCheckView from "@/components/PasswordCheckView.vue";
+  import { usePasswordCheckStore } from "@/stores/PasswordChecking";
   //import storage     from "@/utils/storage";
-	// import { useVuelidate } from '@vuelidate/core'
-	// import { required, email } from '@vuelidate/validators'
+	// import { useVuelidate } from '@vuelidate/core';
+	// import { required, email } from '@vuelidate/validators';
 	
-  export default 
-  {
-    name: "SubscribeView",
-		
-		components: {
-			ModalView,
-			SpinnerCpnt,
-		},
-		
-		setup(){
-			const modalActive = ref(false);
+  const passwordInputFocused = () => {
+    errors.value.passwordEmpty = false
+    errors.value.invalidPassword = false
+  }
+  const passwordVerifyInputFocused = () => {
+    errors.value.passwordVerifyEmpty = false
+    errors.value.passwordsDoesNotMatch = false
+  }
+  
+  const modalActive = ref(false)
+  
+  const toggleModal = () => {
+    modalActive.value = !modalActive.value;
+    if (! modalActive.value){
+      setTimeout(()=>{
+        router.push({name: 'login'})}, 150)
+    }
+  }
+  
+  
+  const email = ref('')
+	const regMail = ref(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    const isEmailValid = () => {
+    return (email.value == "") ? "" : (regMail.value.test(email.value)) ? 'has-success' : 'has-error';
+  }
+  
+  const username = ref('')
+  
+  const passwordCheck = usePasswordCheckStore() ;
+  
+  const passwordVerify = ref('')
+  const recordPasswordValidation = (value) => {
+      passwordVerify.value = value
+    }
+  
+  const awaiting = ref(false)
+  const errors = ref({
+    subscribeFailed: false,
+    emailEmpty: false,
+    usernameEmpty: false,
+    passwordEmpty: false,
+    passwordVerifyEmpty: false,
+    passwordsDoesNotMatch: false,
+    invalidMail: false,
+    invalidPassword: false,
+  })
+  const errorMessage = ref('')
+  
+  const check = (value) => {
+      passwordCheck.updatePassword(value)
+    }
+			
+	const handleFormSubmit = async() => {
+    errors.value.subscribeFailed = false;
+    errors.value.invalidMail = false;
+    errors.value.invalidPassword = false;
+    
+    // --- Vérification des données du formulaire --- //
+    // En version raccourcie : on stocke le résultat de la condition dans la variable
+    errors.value.emailEmpty     = ( email.value    == "" );
+    errors.value.usernameEmpty  = ( username.value == "" );
+    errors.value.passwordEmpty  = ( passwordCheck.password == "" );
+    errors.value.passwordVerifyEmpty  = ( passwordVerify.value == "" );
+    errors.value.passwordsDoesNotMatch = ( passwordCheck.password != passwordVerify.value )
+    errors.value.invalidMail = ( ! regMail.value.test(email.value) );
+    errors.value.invalidPassword = ( !passwordCheck.regPassword.test(passwordCheck.password) );
+          
+    // Si une erreur est rencontrée, on n'envoi pas la requete au serveur !
+    if (!errors.value.usernameEmpty &&
+        !errors.value.passwordEmpty &&
+        !errors.value.emailEmpty &&
+        !errors.value.passwordsDoesNotMatch &&
+        !errors.value.invalidMail &&
+        !errors.value.invalidPassword){
+
+      awaiting.value = true;
+      // Envoie de la requette à l'endpoint users pour création du nouvel utilisateur
+      const data = await userService.subscribe( email.value, username.value, passwordCheck.password );
+      //console.log(this.email, this.username, this.first_name, this.last_name, this.password)
+      //console.log(data);
       
-      const toggleModal = () => {
-        modalActive.value = !modalActive.value;
-        if (! modalActive.value){
-          setTimeout(()=>{
-          router.push({name: 'login'})}, 150)
-        }
+      if (data.success == 1){
+        toggleModal();
+        email.value            = "";
+        username.value         = "" ;
+        passwordCheck.password = "" ;
+        passwordVerify.value   = "";
+        awaiting.value         = false;
       }
-			return { modalActive, toggleModal }
-		},
-		
-    data()
-    {
-      return {
-				email: "",
-        username: "",
-        // first_name: "",
-        // last_name: "",
-        password: "",
-        passwordVerify: "",
-				passwordfocus: false,
-				seePwd:false,
-				seePwdVerif:false,
-				awaiting:false,
-        errors : {
-					subscribeFailed: false,
-          emailEmpty: false,
-          usernameEmpty: false,
-          fisrt_nameEmpty: false,
-          last_nameEmpty: false,
-          passwordEmpty: false,
-          passwordVerifyEmpty: false,
-					passwordsDoesNotMatch: false,
-					invalidMail: false,
-					invalidPassword: false,
-				},
-        success : {
-					subscribeSuccessfull: false,
-        },
-				errorMessage:'',
-				regMail:/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-				regPassword : /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(^.{8,22}$)/,
-				regNumberOfCaracteres:/(^.{8,22}$)/,
-				regSpecialCaractere:/(?=.*[^A-Za-z0-9])/,
-				regCapitilizeCaractere: /(?=.*[A-Z])/,
-				regMinimizeCaractere:/(?=.*[a-z])/,
-				regNumber: /(?=.*[0-9])/,
-			}
-		},
-		// validations () {
-		// 	return{
-		// 		email: { required, email}
-		// 	}
-		// },
-
-		methods: 
-		{
-			isEmailValid() {
-				return (this.email == "") ? "" : (this.regMail.test(this.email)) ? 'has-success' : 'has-error';
-			},
-			handleSeePwd(){
-				this.seePwd = !this.seePwd;
-				this.passwordfocus = true;
-			},
-			handleSeePwdVerif(){
-				this.seePwdVerif = !this.seePwdVerif;
-			},
-					
-			handleBlurPwdVerif(){
-				this.seePwdVerif=false;
-			},
-						
-			pwdVerifInputType(){
-				return (this.seePwdVerif) ? 'text' : 'password';
-			},
-			pwdInputType(){
-				return (this.seePwd) ? 'text' : 'password';
-			},
-			
-			isNumberOfCaracteresValid() {
-				return (this.password == "") ? "has-error" : (this.regNumberOfCaracteres.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-			isSpecialCaractereValid() {
-				return (this.password == "") ? "has-error" : (this.regSpecialCaractere.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-			isCapitilizeCaractereValid() {
-				return (this.password == "") ? "has-error" : (this.regCapitilizeCaractere.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-			isMinimizeCaractereValid() {
-				return (this.password == "") ? "has-error" : (this.regMinimizeCaractere.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-			isNumberValid() {
-				return (this.password == "") ? "has-error" : (this.regNumber.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-					
-			isPasswordValid() {
-				return (this.password == "") ? "has-error" : (this.regPassword.test(this.password)) ? 'has-success' : 'has-error';
-					
-			},
-			isPasswordValidationOk() {
-				if (this.passwordVerify!="" && this.regPassword.test(this.password)){
-					return (this.password == this.passwordVerify) ? 'has-success' : 'has-error';
-				}
-			},
-					
-			handleFocusPasswordInput(){
-				this.errors.invalidPassword=false;
-				this.passwordfocus = true;
-			},
-			handleBlurPasswordInput(){
-				this.seePwd = false;
-				this.passwordfocus = false;
-			},
-			
-			async handleFormSubmit()
-			{
-				this.errors.subscribeFailed = false;
-				this.errors.invalidMail = false;
-				this.errors.invalidPassword = false;
-				
-				// --- Vérification des données du formulaire --- //
-				// En version raccourcie : on stocke le résultat de la condition dans la variable
-				this.errors.emailEmpty     = ( this.email    == "" );
-				this.errors.usernameEmpty  = ( this.username == "" );
-				this.errors.passwordEmpty  = ( this.password == "" );
-				this.errors.passwordsDoesNotMatch = ( this.password != this.passwordVerify )
-				this.errors.invalidMail = ( !this.regMail.test(this.email) );
-				this.errors.invalidPassword = ( !this.regPassword.test(this.password) );
-							
-				// Si une erreur est rencontrée, on n'envoi pas la requete au serveur !
-				if( !this.errors.usernameEmpty &&
-						!this.errors.passwordEmpty &&
-						!this.emailEmpty &&
-						!this.errors.passwordsDoesNotMatch &&
-						!this.errors.invalidMail &&
-						!this.errors.invalidPassword)
-				{
-
-						this.awaiting = true;
-						// Envoie de la requette à l'endpoint users pour création du nouvel utilisateur
-            let data = await userService.subscribe( this.email, this.username, this.password );
-            //console.log(this.email, this.username, this.first_name, this.last_name, this.password)
-						//console.log(data);
-						
-						if (data.success == 1){
-							// this.email          = "";
-							// this.username       = "" ;
-							// this.password       = "" ;
-							// this.passwordVerify = "";
-							this.toggleModal();
-							this.awaiting = false;
-
-						}
-					
-						else{
-							this.errorMessage = data.response.message;
-							this.errors.subscribeFailed = true;
-							this.awaiting = false;
-						}
-					}
-				}
-			
-		}
-	}
+    
+      else{
+        errorMessage.value = data.response.message;
+        errors.value.subscribeFailed = true;
+        awaiting.value = false;
+      }
+    }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -399,120 +231,68 @@ form {
   flex-direction: column;
   padding: 1em;
   margin: 0;
-
-  label {
-    margin-bottom: 1em;
-		color: #003e7c;
-		text-align: left;
-		font-weight: normal;
-		font-family: 'Quicksand',  Arial, Helvetica, sans-serif;
-    input {
-      display: block;
-      margin: 5px 0;
-      width: 100%;
-      padding: 0.75em 1.5em;
-      // border-radius: 0.5em;
-			background: #ffffff;;
-      border: none;
-			border-bottom: #00aeff 2px solid;
-			border-left:  #00aeff 2px solid;;
-      box-sizing: border-box;
-			&:hover{
-			background: #e0e0e0;;
-			}
-			&:focus{
-			background: #e0e0e0;;
-			}
-			&.has-error{
-				background: rgb(255, 156, 156);
-			}
-			&.has-success{
-				background: rgb(159, 206, 159);
-			}
-    }
-  }
-
-  button {
-    display: block;
-    margin: 5px 0 2.3em 0;
-    width: 100%;
-    padding: 1em 1.5em;
-    border-radius: 0.5em;
-    color: white;
-		background: blueviolet;
-    font-weight: bold;
-    border: none;
-    box-sizing: border-box;
-		transition: 0.3s;
-
-     &:hover
-    {
-      cursor: pointer;
-			background: darken(blueviolet, 15%);
-    }
-		&:disabled{
-			background: #bbb;
-		}
-		>div {
-			margin: auto;
-		}
-  }
-	
-	ul{
-		list-style-type: none;
-		font-size: 0.9em;
-		color:rgb(0, 128, 0); margin:0;
-		&>div{
-			display: flex;
-			align-items: center;
-				&.has-error{
-				color:red;
-				transition: 0.5s;
-				transform: rotateX(0deg)
-				}
-			
-			&.has-success{
-				color:green;
-				transition: 0.5s;
-				transform: rotateX(360deg)
-
-			}
-		}
-	}
-	
-	li{
-			margin-left: 0.5em;
-	}
-	.eye{
-		color:#003e7c;
-		font-size: 1.1em;
-		position:relative;
-		left: calc(100% - 2em);
-		top:-2em;
-		&:hover{
-			cursor:pointer;
-		}
-		&.hide{
-			display: none;
-		}
-	}
-	
-	.hide{
-		display: none;
-	}
-	
-	.error{
-		color : rgb(133, 0, 0);
-		font-weight: bold;
-		margin-bottom: 2.3em;
-		text-align: center;
-	}
-	.success{
-		color : rgb(0, 133, 0);
-		font-weight: bold;
-		margin-bottom: 1em;
-		text-align: center;
-	}
-
 }
+
+label {
+  width:fit-content;
+  font-size:1.2em;
+  font-family:'Quicksand', Arial, Helvetica, sans-serif ;
+  color:rgb(0, 89, 255);
+  line-height: 1.3em;
+}
+
+input {
+  display: block;
+  margin: 5px 0 1.2em 0;
+  width: 100%;
+  padding: 0.75em 1.5em;
+  background: #ffffff;;
+  border: none;
+  border-bottom: #00aeff 2px solid;
+  border-left:  #00aeff 2px solid;;
+  box-sizing: border-box;
+  &:hover{
+    background: #e0e0e0;;
+  }
+  &:focus{
+    background: #e0e0e0;;
+  }
+  &.has-error{
+    background: rgb(255, 156, 156);
+  }
+  &.has-success{
+    background: rgb(159, 206, 159);
+  }
+}
+
+button {
+  display: block;
+  margin: 5px 0 2.3em 0;
+  width: 100%;
+  padding: 1em 1.5em;
+  border-radius: 0.5em;
+  color: white;
+  background: blueviolet;
+  font-weight: bold;
+  border: none;
+  box-sizing: border-box;
+  transition: 0.3s;
+  &:hover{
+    cursor: pointer;
+    background: darken(blueviolet, 15%);
+  }
+  &:disabled{
+    background: #bbb;
+  }
+  >div {
+    margin: auto;
+  }
+}
+.error{
+  color : rgb(133, 0, 0);
+  font-weight: bold;
+  //margin-bottom: 0em;
+  text-align: center;
+}
+
 </style>

@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkliste_de_course"]=self["webpackChunkliste_de_course"]||[]).push([[991],{8991:function(e,n,r){r.r(n),r.d(n,{default:function(){return d}});var t=r(3396);function s(e,n,r,s,u,c){return(0,t.wg)(),(0,t.iD)("h3",null,"Mon profil")}var u=r(3954),c=r(9079),a={name:"ProfilView",setup(){const e=(0,u.L)();return{userStore:e}},async created(){const e=await c.W.isConnected();e||this.$router.push({name:"403"})}},o=r(89);const i=(0,o.Z)(a,[["render",s],["__scopeId","data-v-1e2ca5f9"]]);var d=i}}]);
-//# sourceMappingURL=991.d0139198.js.map
